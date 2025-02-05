@@ -32,12 +32,15 @@ TBD
 
 2. **Install dependencies:**  
    ```bash
+   TBD
 
 3. **Set up environment variables:**  
    ```bash
+   TBD
 
 4. **Run the application:**
    ```bash
+   TBD
 
 ---
 
