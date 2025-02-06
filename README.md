@@ -14,10 +14,10 @@ BYTE is a capstone project for INFO 490, aimed at addressing the challenges face
 TBD
 
 ### Backend  
-TBD
+AWS, Google Cloud, or Azure TBD
 
 ### Additional Technologies  
-TBD
+OpenAI, TensorFlow/Pytorch, PostgreSQL/MySQL, or MongoDB TBD
 
 ---
 
