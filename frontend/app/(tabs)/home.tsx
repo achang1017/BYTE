@@ -1,6 +1,7 @@
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 import UpcomingFlight from '@/components/upcomingFlight';
+import { auth } from '../../firebase';
 
 type FlightInfo = {
   date: string;
@@ -17,8 +18,18 @@ type FlightInfo = {
 export default function Home() {
 
   //TODO connetc the backend
-  const user = 'Ryan';
   const userImage = require('../../assets/images/user-icon.png');
+
+  let user;
+  if (!auth) {
+    user = {
+      displayName: 'User',
+      photoURL: userImage,
+    }
+  } else {
+    user = auth.currentUser;
+  }
+
 
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
 
@@ -42,10 +53,10 @@ export default function Home() {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Hello {user}</Text>
+          <Text style={styles.title}>Hello {user?.displayName}</Text>
           <Text style={styles.subtitle}>How can I help you?</Text>
         </View>
-        <Image source={userImage} style={styles.userImage} />
+        <Image source={{ uri: user?.photoURL }} style={styles.userImage} />
       </View>
 
       <View style={styles.section}>
