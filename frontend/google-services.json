@@ -49,6 +49,50 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541657116895:android:58fa1f8cc97e2b15b8796a",
+        "android_client_info": {
+          "package_name": "com.uwbyte.kaona"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "541657116895-468h0tv81c38g3085q4569sqn8p71doa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uwbyte.kaona",
+            "certificate_hash": "b24ef5b478cc6f9ad5c70c088783def1ede8cab8"
+          }
+        },
+        {
+          "client_id": "541657116895-pueeovf9qoesh6hmhnffa05dn1e648gh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFClSvlIZA467sawUbcrnUfjgMdFE33-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "541657116895-pueeovf9qoesh6hmhnffa05dn1e648gh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "541657116895-p62cnr8gcipeo3ji956grl3jrft5pjj6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.byte.kaona"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
