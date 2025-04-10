@@ -1,37 +1,126 @@
+# Kaona App Frontend Setup Guide
 
-## Get started
+## ✨ Get Started
 
-1. Install dependencies
+### 1. Install Dependencies
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-2. Start the app
+### 2. Start the App in Development
 
-   ```bash
-    npx expo start
-   ```
+```bash
+npx expo start
+```
 
-3. For specific build
+This will give you options to open the app in:
 
-- `npx expo run:ios` — build for iOS simulator
-- `npx expo run:android` — build for Android
+- Web
+- Android Emulator – [Setup Guide](https://docs.expo.dev/workflow/android-studio-emulator/)
+- iOS Simulator – [Setup Guide](https://docs.expo.dev/workflow/ios-simulator/)
 
-In the output, you'll find options to open the app in a
+> The app will run inside the **Expo Go** client, which does not support custom native modules like Google Auth.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## ⚠️ Google Auth Limitation with Expo Go
 
+Due to technical limitations, **Google login does not work inside the Expo Go app**. Only **email/password login** is supported in that environment.
 
-## Learn more
+To use Google Sign-In, you must run the app via a custom development build or install it in a local emulator.
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## ✅ Running the App with Google Login Support
+
+### Option 1: Local Development Build in a Simulator/Emulator (Recommended)
+
+This method builds and installs a dedicated development build of the app on your local machine.
+
+#### iOS
+- Requires Xcode and CocoaPods
+- To launch in the iOS simulator:
+
+```bash
+npx expo run:ios
+```
+
+#### Android
+- Requires Android Studio and Android SDK
+- To launch in the Android emulator:
+
+```bash
+npx expo run:android
+```
+
+> This process builds a standalone version of the Kaona app in your emulator.
+
+---
+
+### Option 2: Build with EAS (Expo Application Services)
+
+Use EAS to generate a downloadable `.apk` (Android) or `.app` (iOS) file, then install it manually in your emulator.
+
+```bash
+npx eas build --profile development-simulator --platform android
+npx eas build --profile development-simulator --platform ios
+```
+
+After the build completes, download the file from:
+
+👉 [Expo Build Page](https://expo.dev/accounts/uwbyte/projects/kaona/builds)
+
+Then simply **drag the file into your emulator** to install.
+
+> 🔁 For Google Sign-In to work, make sure the correct `redirectUri` is configured and whitelisted in your Google Cloud Console.
+
+---
+
+## 🔐 Configuring SHA Key for Firebase (Required for Android Google Login)
+
+If Google Sign-In fails on Android with an SHA key error:
+
+### 1. Retrieve Your SHA-1 Key
+
+```bash
+eas credentials -p android
+```
+
+Copy the value under **SHA1 Fingerprint**.
+
+### 2. Add the SHA-1 Key to Firebase
+
+- Go to [Firebase Console](https://console.firebase.google.com/)
+- Navigate to:  
+  `Project Settings > General > Your App (com.uwbyte.kaona)`
+- Under **SHA certificate fingerprints**, click **Add fingerprint**
+- Paste the SHA-1 key and click **Save**
+
+> 🔀 You can register multiple SHA-1 keys to support different developers or environments.
+
+---
+
+## 🚀 Building for Production
+
+You can build production versions of the app using EAS:
+
+### Android Production Build
+```bash
+npx eas build --platform android --profile production
+```
+
+### iOS Production Build
+> ⚠️ iOS production builds require an active Apple Developer membership, which involves additional cost. This step is currently not supported.
+
+---
+
+## 📖 Learn More
+
+- [Expo Documentation](https://docs.expo.dev/): Learn fundamentals and advanced concepts
+- [Learn Expo Tutorial](https://docs.expo.dev/tutorial/introduction/): A step-by-step guide to building with Expo
+- [Firebase Auth Documentation](https://firebase.google.com/docs/auth): Set up auth providers and persistent sessions
+- [Google Cloud Console](https://console.cloud.google.com/apis/credentials): Manage OAuth credentials and redirect URIs
+
+---
 

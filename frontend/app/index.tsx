@@ -1,11 +1,54 @@
 import { Text, View, StyleSheet, KeyboardAvoidingView, TextInput, Button, Image, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithCredential, GoogleAuthProvider } from 'firebase/auth';
+import { useRouter } from 'expo-router';
+
+
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+
+
+const webClientId = '541657116895-pueeovf9qoesh6hmhnffa05dn1e648gh.apps.googleusercontent.com'
+const iosClientId = '541657116895-p62cnr8gcipeo3ji956grl3jrft5pjj6.apps.googleusercontent.com'
+const androidClientId = '541657116895-468h0tv81c38g3085q4569sqn8p71doa.apps.googleusercontent.com'
+
+
+WebBrowser.maybeCompleteAuthSession();
+
 
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
+
+    const config = {
+        webClientId,
+        iosClientId,
+        androidClientId,
+    }
+    const [request, response, signInwithGoogle] = Google.useAuthRequest(config);
+
+    useEffect(() => {
+        if (response?.type === 'success' && response.authentication) {
+            const id_token = response.authentication.idToken;
+
+            if (id_token) {
+                const credential = GoogleAuthProvider.credential(id_token);
+                signInWithCredential(auth, credential)
+                    .then(() => {
+                        alert('Signed in with Google + Firebase!');
+                        router.replace('/(tabs)/home');
+                    })
+                    .catch((error) => {
+                        alert('Firebase sign-in failed: ' + error.message);
+                    });
+            }
+        }
+    }, [response]);
+
+
+
 
     const signUp = async () => {
         try {
@@ -32,6 +75,7 @@ export default function LoginScreen() {
             setPassword('');
         }
     };
+
 
     return (
         <View style={styles.container}>
@@ -64,6 +108,10 @@ export default function LoginScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.signUpButton} onPress={signIn}>
                     <Text style={styles.signInButtonText} >Sign in</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.signInwithGoogle} onPress={() => signInwithGoogle()}>
+                    <Text style={styles.signInButtonText} >Sign in with google</Text>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
         </View>
@@ -106,6 +154,15 @@ const styles = StyleSheet.create({
     },
     signUpButton: {
         backgroundColor: '#C9D3E3',
+        width: '100%',
+        height: 50,
+        borderRadius: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+    signInwithGoogle: {
+        backgroundColor: '#012A86',
         width: '100%',
         height: 50,
         borderRadius: 16,
