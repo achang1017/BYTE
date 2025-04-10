@@ -3,18 +3,17 @@ import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithCredential, GoogleAuthProvider } from 'firebase/auth';
 import { useRouter } from 'expo-router';
+import Constants from 'expo-constants';
+
 
 
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 
-const webClientId = '541657116895-pueeovf9qoesh6hmhnffa05dn1e648gh.apps.googleusercontent.com'
-const iosClientId = '541657116895-p62cnr8gcipeo3ji956grl3jrft5pjj6.apps.googleusercontent.com'
-const androidClientId = '541657116895-468h0tv81c38g3085q4569sqn8p71doa.apps.googleusercontent.com'
-
-
 WebBrowser.maybeCompleteAuthSession();
+
+const googleClientIds = Constants.expoConfig?.extra?.googleClientIds;
 
 
 export default function LoginScreen() {
@@ -22,11 +21,13 @@ export default function LoginScreen() {
     const [password, setPassword] = useState('');
     const router = useRouter();
 
+
     const config = {
-        webClientId,
-        iosClientId,
-        androidClientId,
-    }
+        webClientId: googleClientIds?.web,
+        iosClientId: googleClientIds?.ios,
+        androidClientId: googleClientIds?.android,
+    };
+
     const [request, response, signInwithGoogle] = Google.useAuthRequest(config);
 
     useEffect(() => {
