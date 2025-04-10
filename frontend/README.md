@@ -8,7 +8,11 @@
 npm install
 ```
 
-### 2. Start the App in Development
+### 2. Update .env file
+
+With the credential shared within the team, update the .env file. at the root 
+
+### 3. Start the App in Development
 
 ```bash
 npx expo start
@@ -114,6 +118,84 @@ npx eas build --platform android --profile production
 > ⚠️ iOS production builds require an active Apple Developer membership, which involves additional cost. This step is currently not supported.
 
 ---
+
+## 🔧 Managing Environment Variables
+
+If you need to add API keys or other sensitive configuration, follow these steps to securely manage your environment variables using a `.env` file and Expo’s `extra` config.
+
+---
+
+### 1️⃣ Update `.env` File
+
+At the root of your project, create or update a `.env` file and define your variables:
+
+```env
+KEY=your_value
+```
+
+> ✅ After updating `.env`, always restart your development server:
+>
+> ```bash
+> npx expo start --clear
+> ```
+
+---
+
+### 2️⃣ Inject Variables via `app.config.js`
+
+Ensure you have an `app.config.js` (rename from `app.json` if needed), and import the variables using `dotenv`:
+
+```js
+import 'dotenv/config';
+
+export default {
+  expo: {
+    name: 'kaona',
+    slug: 'kaona',
+    version: '1.0.0',
+    // other config...
+    extra: {
+      anotherCredential: {
+        exampleKey: process.env.ANOTHER_CLIENT_ID,
+      },
+    },
+  },
+};
+```
+
+---
+
+### 3️⃣ Access Variables in Your App (with `expo-constants`)
+
+To use your custom environment variables within your application code:
+
+```ts
+import Constants from 'expo-constants';
+
+const clientId = Constants.expoConfig?.extra?.anotherCredential?.exampleKey;
+```
+
+> You can now safely use environment variables for Firebase setup, Google Auth, and other API integrations.
+
+---
+
+### 4️⃣ Add Environment Variables to EAS Dashboard
+
+You also need to add the same variables in the [Expo Dashboard](https://expo.dev) under:
+
+**Project → Builds → Environment Variables**
+
+For each variable in your `.env`, create a key–value pair. For example:
+
+| Key                | Value                                           |
+| ------------------ | ----------------------------------------------- |
+| `FIREBASE_API_KEY` | `AIza...`                                       |
+| `WEB_CLIENT_ID`    | `your-web-client-id.apps.googleusercontent.com` |
+
+This ensures your builds work correctly in both development and production environments.
+
+---
+
 
 ## 📖 Learn More
 
