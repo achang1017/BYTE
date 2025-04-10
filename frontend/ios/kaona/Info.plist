@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>myapp</string>
+          <string>com.byte.kaona</string>
           <string>com.byte.kaona</string>
         </array>
       </dict>
@@ -35,6 +35,12 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>com.googleusercontent.apps.541657116895-p62cnr8gcipeo3ji956grl3jrft5pjj6</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+kaona</string>
         </array>
       </dict>
     </array>
