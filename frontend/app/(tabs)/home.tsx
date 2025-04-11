@@ -1,36 +1,24 @@
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { useState, useEffect } from 'react';
-import UpcomingFlight from '@/components/upcomingFlight';
+
 import { auth } from '../../firebase';
 
-type FlightInfo = {
-  date: string;
-  flightNumber: string;
-  gate: string;
-  departure: string;
-  arrival: string;
-  departureTime: string;
-  arrivalTime: string;
-  duration: string;
-  status: string;
-};
+import UpcomingFlight from '@/components/upcomingFlight';
+import { FlightInfo } from '@/dataType/flight';
+import { AlertType, Alert } from '@/dataType/alert';
+import Notification from '@/components/notification';
+
 
 export default function Home() {
 
-  //TODO connetc the backend
-  const userImage = require('../../assets/images/user-icon.png');
+  const userImage = '../../assets/images/user-icon.png';
+  const user = auth.currentUser;
 
-  let user;
-  if (!auth) {
-    user = {
-      displayName: 'User',
-      photoURL: userImage,
-    }
-  } else {
-    user = auth.currentUser;
-  }
+  const displayName = user?.displayName || 'User';
+  const userPhoto = user?.photoURL || userImage;
 
 
+  // connect with firbase 
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
 
   useEffect(() => {
@@ -49,18 +37,60 @@ export default function Home() {
     setFlightInfo(temp);
   }, []);
 
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+
+  useEffect(() => {
+    if (!flightInfo) return;
+
+    const newAlerts: Alert[] = [
+      {
+        id: 1,
+        type: AlertType.FlightInteruption,
+        flightInfo,
+      },
+      {
+        id: 2,
+        type: AlertType.MeetingConflict,
+        flightInfo,
+      },
+    ];
+
+    setAlerts(newAlerts);
+  }, [flightInfo]);
+
+
+  const dismissAlert = (id: number) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id));
+  };
+
+
   return (
     <ScrollView style={styles.container}>
+      {/*User Info Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Hello {user?.displayName}</Text>
+          <Text style={styles.title}>Hello {displayName}</Text>
           <Text style={styles.subtitle}>How can I help you?</Text>
         </View>
-        <Image source={{ uri: user?.photoURL }} style={styles.userImage} />
+        <Image source={{ uri: userPhoto }} style={styles.userImage} />
       </View>
 
+      {/* Upcoming flight section */}
       <View style={styles.section}>
         <UpcomingFlight flightInfo={flightInfo} />
+      </View>
+
+      {/* Alert section */}
+      <View style={styles.section}>
+        {alerts.map(alert => (
+          <Notification
+            key={alert.id}
+            alertType={alert.type}
+            flightInfo={alert.flightInfo}
+            onDismiss={() => dismissAlert(alert.id)}
+          />
+        ))}
+
       </View>
     </ScrollView>
   );

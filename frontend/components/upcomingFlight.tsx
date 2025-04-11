@@ -1,17 +1,8 @@
 import { Text, View, StyleSheet, Image } from 'react-native';
+import { FlightInfo } from '@/dataType/flight';
 
 type Props = {
-    flightInfo: {
-        date: string;
-        flightNumber: string;
-        gate: string;
-        departure: string;
-        arrival: string;
-        departureTime: string;
-        arrivalTime: string;
-        duration: string;
-        status: string;
-    } | null;
+    flightInfo: FlightInfo | null;
 };
 
 export default function UpcomingFlight({ flightInfo }: Props) {
