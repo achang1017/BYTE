@@ -10,7 +10,8 @@ npm install
 
 ### 2. Update .env file
 
-With the credential shared within the team, update the .env file. at the root 
+With the credential shared within the team, update the .env file. at the frontend root.\
+It shuold be like `BYTE/frontend/.env`
 
 ### 3. Start the App in Development
 
