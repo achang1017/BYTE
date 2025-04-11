@@ -17,7 +17,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen name="about" options={{
+      <Tabs.Screen name="flight" options={{
         title: 'Flights', tabBarIcon: ({ }) => (
           <Image
             source={require('../../assets/images/flightTracker-icon.png')}
