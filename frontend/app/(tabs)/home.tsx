@@ -41,7 +41,7 @@ export default function Home() {
         }
   
         const data = await response.json();
-        setFlightInfo(data[0]); // Assuming the first flight is the most relevant
+        setFlightInfo(data[0]);
       } catch (err) {
         console.error(err);
       }
