@@ -17,9 +17,12 @@ const googleClientIds = Constants.expoConfig?.extra?.googleClientIds;
 
 
 export default function LoginScreen() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+
     const router = useRouter();
+
+    // mock up email and password for testing
+    const email = "test@gmail.com";
+    const password = "test123";
 
 
     const config = {
@@ -49,21 +52,6 @@ export default function LoginScreen() {
     }, [response]);
 
 
-
-
-    const signUp = async () => {
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            alert("Sign-up successful. Check your email.");
-        } catch (e) {
-            const err = e as Error;
-            alert("Error signing up: " + err.message);
-        } finally {
-            setEmail('');
-            setPassword('');
-        }
-    };
-
     const signIn = async () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
@@ -71,9 +59,6 @@ export default function LoginScreen() {
         } catch (e) {
             const err = e as Error;
             alert("Error signing in: " + err.message);
-        } finally {
-            setEmail('');
-            setPassword('');
         }
     };
 
@@ -81,35 +66,8 @@ export default function LoginScreen() {
     return (
         <View style={styles.container}>
             <Image source={require('../assets/images/splash-icon.png')} style={styles.logo} />
-            <KeyboardAvoidingView behavior='padding' style={styles.formContainer}>
-                <Text style={styles.subTitle}>SAP Concur</Text>
-
-                <View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Username, verified email address or SSO code"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                    />
-                </View>
-
-                <View>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Enter your password"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
-                    />
-                </View>
-                <TouchableOpacity style={styles.signUpButton} onPress={signUp}>
-                    <Text style={styles.signInButtonText}  >Sign up</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.signUpButton} onPress={signIn}>
-                    <Text style={styles.signInButtonText} >Sign in</Text>
-                </TouchableOpacity>
+            <KeyboardAvoidingView behavior='padding' style={styles.formContainer} >
+                <Text style={styles.subTitle} onPress={signIn}>SAP Concur</Text>
 
                 <TouchableOpacity style={styles.signInwithGoogle} onPress={() => signInwithGoogle()}>
                     <Text style={styles.signInButtonText} >Sign in with google</Text>
