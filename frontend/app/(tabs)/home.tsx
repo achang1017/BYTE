@@ -11,6 +11,7 @@ import Notification from '@/components/notification';
 
 export default function Home() {
 
+
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
 
@@ -36,6 +37,18 @@ export default function Home() {
             Authorization: `Bearer ${userToken}`,
           },
         });
+
+        setFlightInfo({
+          date: '2023-10-01',
+          departure: 'LAX',
+          departureTime: '12:00 PM',
+          arrival: 'JFK',
+          arrivalTime: '8:00 PM',
+          flightNumber: 'AA123',
+          gate: 'A1',
+          status: 'On Time',
+          duration: '6h 0m'
+        } as FlightInfo);
 
         if (!response.ok) {
           throw new Error('Failed to fetch flight data');
