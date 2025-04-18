@@ -22,19 +22,33 @@ export default function Home() {
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
 
   useEffect(() => {
-    const temp: FlightInfo = {
-      date: '2023-10-01',
-      flightNumber: 'AC123',
-      gate: 'A1',
-      departure: 'SEA',
-      arrival: 'LAX',
-      departureTime: '7:20 AM',
-      arrivalTime: '10:05 AM',
-      duration: '2h 45m',
-      status: 'DELAYED',
-    };
 
-    setFlightInfo(temp);
+    async function fetchFlightData() {
+      try {
+        const userToken = await user?.getIdToken();
+
+        if (!userToken) {
+          throw new Error('User token not available');
+        }
+
+        const response = await fetch('http://localhost:5000/api/flights', {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch flight data');
+        }
+
+        const data = await response.json();
+        setFlightInfo(data[0]);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchFlightData();
   }, []);
 
   const [alerts, setAlerts] = useState<Alert[]>([]);
