@@ -27,29 +27,6 @@ export default function FlightScreen() {
                         Authorization: `Bearer ${userToken}`,
                     },
                 });
-
-                setFlightInfos([{
-                    date: '2023-10-01',
-                    departure: 'LAX',
-                    departureTime: '12:00 PM',
-                    arrival: 'JFK',
-                    arrivalTime: '8:00 PM',
-                    flightNumber: 'AA123',
-                    gate: 'A1',
-                    status: 'On Time',
-                    duration: '6h 0m'
-                } as FlightInfo, {
-                    date: '2023-10-01',
-                    departure: 'LAX',
-                    departureTime: '12:00 PM',
-                    arrival: 'JFK',
-                    arrivalTime: '8:00 PM',
-                    flightNumber: 'AA123',
-                    gate: 'A1',
-                    status: 'On Time',
-                    duration: '6h 0m'
-                } as FlightInfo]);
-
                 if (!response.ok) {
                     throw new Error('Failed to fetch flight data');
                 }
