@@ -4,6 +4,7 @@ import { auth } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithCredential, GoogleAuthProvider } from 'firebase/auth';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
+import { useAuth } from '../authContext';
 
 
 
@@ -29,18 +30,22 @@ export default function LoginScreen() {
         webClientId: googleClientIds?.web,
         iosClientId: googleClientIds?.ios,
         androidClientId: googleClientIds?.android,
+        scopes: ['profile', 'email', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/gmail.readonly'],
     };
 
     const [request, response, signInwithGoogle] = Google.useAuthRequest(config);
+    const { setAccessToken } = useAuth();
 
     useEffect(() => {
         if (response?.type === 'success' && response.authentication) {
             const id_token = response.authentication.idToken;
+            const accessToken = response.authentication.accessToken;
 
-            if (id_token) {
+            if (id_token && accessToken) {
                 const credential = GoogleAuthProvider.credential(id_token);
                 signInWithCredential(auth, credential)
                     .then(() => {
+                        setAccessToken(accessToken);
                         alert('Signed in with Google + Firebase!');
                         router.replace('/(tabs)/home');
                     })

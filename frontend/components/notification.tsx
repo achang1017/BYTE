@@ -1,7 +1,9 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
 import { FlightInfo } from '@/dataType/flight';
 import { AlertType } from '@/dataType/alert';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../authContext';
 
 type Props = {
     flightInfo: FlightInfo | null;
@@ -10,9 +12,34 @@ type Props = {
 };
 
 export default function Notification({ flightInfo, alertType, onDismiss }: Props) {
+    const [conflicts, setConflicts] = useState<any[]>([]);
+    const { accessToken } = useAuth();
+    const router = useRouter();
+    
     if (!flightInfo) return null;
 
-    const router = useRouter();
+    useEffect(() => {
+        const checkConflicts = async () => {
+
+            if (!flightInfo || !flightInfo.flightNumber || !flightInfo.arrivalTime || !flightInfo.departureTime) return;
+            const calendarEvents = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${flightInfo.departureTime}&timeMax=${flightInfo.arrivalTime}&singleEvents=true`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }).then(res => res.json())
+              .then(data => data.items || [])
+              .catch(err => {
+                  console.error('Error accessing Google Calendar:', err);
+                  return [];
+              });
+
+            setConflicts(calendarEvents);
+        };
+
+        if (alertType === AlertType.MeetingConflict) {
+            checkConflicts();
+        }
+    }, [alertType]);
 
     if (alertType === AlertType.FlightInteruption) {
         return (
@@ -58,9 +85,12 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
             {/* Flight Details */}
             <View style={styles.detailsRow}>
                 <View>
-                    <Text style={styles.text}>2 Affected Meeting
+                    <Text style={styles.text}>{conflicts.length} Affected Meeting{conflicts.length !== 1 ? 's' : ''}</Text>
+                    <Text style={styles.text}>
+                        {conflicts.map((event, i) =>
+                            `${event.summary} on ${new Date(event.start.dateTime).toLocaleString()}${i < conflicts.length - 1 ? ' and ' : ''}`
+                        ).join('')}
                     </Text>
-                    <Text style={styles.text}>Bob’s meeting on Feb 24 1:00 PM and Sarah’s meeting on Feb 24 4:00 PM need to be rescheduled.</Text>
                 </View>
             </View>
 
@@ -73,6 +103,8 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
             </TouchableOpacity>
         </View>)
 
+    } else {
+        return null;
     }
 
 
