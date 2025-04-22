@@ -15,7 +15,6 @@ router.post("/", async (req, res) => {
 
         if (!doc.exists) {
             await userRef.set({
-                email,
                 firstName: "test1",
                 lastName: "test2",
             });
