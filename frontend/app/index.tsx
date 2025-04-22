@@ -38,11 +38,11 @@ export default function LoginScreen() {
 
     useEffect(() => {
         if (response?.type === 'success' && response.authentication) {
-            const id_token = response.authentication.idToken;
+            const idToken = response.authentication.idToken;
             const accessToken = response.authentication.accessToken;
 
-            if (id_token && accessToken) {
-                const credential = GoogleAuthProvider.credential(id_token);
+            if (idToken && accessToken) {
+                const credential = GoogleAuthProvider.credential(idToken);
                 signInWithCredential(auth, credential)
                     .then(() => {
                         setAccessToken(accessToken);
