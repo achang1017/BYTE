@@ -22,6 +22,22 @@ export default function Home() {
   // connect with firbase 
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
 
+  // if you wanna test calendar sync when getting flight info doesn't work, use this hard coded info
+
+  // useEffect(() => {
+  //   setFlightInfo({
+  //     date: '2023-10-01',
+  //     departure: 'LAX',
+  //     departureTime: '2025-04-20T07:00:00-07:00',
+  //     arrival: 'JFK',
+  //     arrivalTime: '2025-04-20T12:00:00-04:00',
+  //     flightNumber: 'DL123',
+  //     gate: 'A1',
+  //     status: 'On Time',
+  //     duration: '6h 0m',
+  //   });
+  // }, []);
+
   useEffect(() => {
 
     async function fetchFlightData() {
