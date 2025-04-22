@@ -1,13 +1,13 @@
 import {  View, StyleSheet, ScrollView} from 'react-native';
 import { useState, useEffect } from 'react';
 import { FlightInfo } from '@/dataType/flight';
-import { auth } from '@/firebase';
 import UpcomingFlight from '@/components/upcomingFlight';
+import { useAuth } from '../../authContext';
 
 
 export default function FlightScreen() {
 
-    const user = auth.currentUser;
+    const { accessToken } = useAuth();
 
     // connect with firbase 
     const [flightInfos, setFlightInfos] = useState<FlightInfo[] | null>(null);
@@ -16,15 +16,13 @@ export default function FlightScreen() {
 
         async function fetchFlightData() {
             try {
-                const userToken = await user?.getIdToken();
-
-                if (!userToken) {
+                if (!accessToken) {
                     throw new Error('User token not available');
                 }
 
-                const response = await fetch('http://localhost:5000/api/flights', {
+                const response = await fetch('http://localhost:3000/api/flights', {
                     headers: {
-                        Authorization: `Bearer ${userToken}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 });
                 if (!response.ok) {
