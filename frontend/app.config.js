@@ -11,7 +11,8 @@ export default
       "scheme": "com.byte.kaona",
       "platforms": [
         "ios",
-        "android"
+        "android",
+        "web"
       ],
       "userInterfaceStyle": "automatic",
       "newArchEnabled": true,
