@@ -57,6 +57,9 @@ export default function FlightTracker({ flightInfo }: Props) {
         },
     ];
 
+    const newArriavaltime = new Date(flightInfo.arrivalTime);
+    const newDeparturetime = new Date(flightInfo.departureTime);
+
 
     return (
         <View style={styles.container}>
@@ -69,8 +72,8 @@ export default function FlightTracker({ flightInfo }: Props) {
             <View style={styles.flightRow}>
                 <View style={styles.locationBox}>
                     <Text style={styles.code}>{flightInfo.departure}</Text>
-                    <Text style={styles.text}>{flightInfo.departureTime}</Text>
-                </View>
+                    <Text style={styles.text}>{newDeparturetime.toDateString()}</Text>
+                    <Text style={styles.text}>{newDeparturetime.toTimeString()}</Text>                </View>
 
                 <View style={styles.middleBox}>
                     <Image
@@ -82,8 +85,8 @@ export default function FlightTracker({ flightInfo }: Props) {
 
                 <View style={styles.locationBox}>
                     <Text style={styles.code}>{flightInfo.arrival}</Text>
-                    <Text style={styles.text}>{flightInfo.arrivalTime}</Text>
-                </View>
+                    <Text style={styles.text}>{newArriavaltime.toDateString()}</Text>
+                    <Text style={styles.text}>{newArriavaltime.toTimeString()}</Text>                </View>
             </View>
 
             {/* Flight Details */}
@@ -157,7 +160,7 @@ const styles = StyleSheet.create({
     },
     flightRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         marginTop: 20,
     },
     detailsRow: {

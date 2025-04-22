@@ -15,7 +15,7 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
     const [conflicts, setConflicts] = useState<any[]>([]);
     const { accessToken } = useAuth();
     const router = useRouter();
-    
+
     if (!flightInfo) return null;
 
     useEffect(() => {
@@ -27,11 +27,11 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                     Authorization: `Bearer ${accessToken}`,
                 },
             }).then(res => res.json())
-              .then(data => data.items || [])
-              .catch(err => {
-                  console.error('Error accessing Google Calendar:', err);
-                  return [];
-              });
+                .then(data => data.items || [])
+                .catch(err => {
+                    console.error('Error accessing Google Calendar:', err);
+                    return [];
+                });
 
             setConflicts(calendarEvents);
         };
@@ -62,7 +62,10 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={() => { router.replace('/(tabs)/flight') }}>
+                <TouchableOpacity style={styles.button} onPress={() => router.push({
+                    pathname: '/(pages)/alternativeFlights',
+                    params: { ...flightInfo },
+                })}>
                     <Text style={styles.buttonText} >Find alternative flight</Text>
                 </TouchableOpacity>
 

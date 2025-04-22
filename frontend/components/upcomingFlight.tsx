@@ -10,6 +10,9 @@ export default function UpcomingFlight({ flightInfo }: Props) {
     if (!flightInfo) return null;
 
     const router = useRouter();
+    const newArriavaltime = new Date(flightInfo.arrivalTime);
+    const newDeparturetime = new Date(flightInfo.departureTime);
+
 
     return (
         <TouchableOpacity onPress={() => router.push({
@@ -27,7 +30,9 @@ export default function UpcomingFlight({ flightInfo }: Props) {
                 <View style={styles.flightRow}>
                     <View style={styles.locationBox}>
                         <Text style={styles.code}>{flightInfo.departure}</Text>
-                        <Text style={styles.text}>{flightInfo.departureTime}</Text>
+                        <Text style={styles.text}>{newDeparturetime.toDateString()}</Text>
+                        <Text style={styles.text}>{newDeparturetime.toTimeString()}</Text>
+
                     </View>
 
                     <View style={styles.middleBox}>
@@ -40,7 +45,8 @@ export default function UpcomingFlight({ flightInfo }: Props) {
 
                     <View style={styles.locationBox}>
                         <Text style={styles.code}>{flightInfo.arrival}</Text>
-                        <Text style={styles.text}>{flightInfo.arrivalTime}</Text>
+                        <Text style={styles.text}>{newArriavaltime.toDateString()}</Text>
+                        <Text style={styles.text}>{newArriavaltime.toTimeString()}</Text>
                     </View>
                 </View>
 
@@ -77,7 +83,7 @@ const styles = StyleSheet.create({
     },
     flightRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         marginTop: 20,
     },
     detailsRow: {

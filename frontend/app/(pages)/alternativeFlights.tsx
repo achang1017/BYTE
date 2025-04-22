@@ -1,0 +1,46 @@
+import FlightTracker from '@/components/flightTracker';
+import { FlightInfo } from '@/dataType/flight';
+import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+
+
+
+export default function AlternativeFlightScreen() {
+    const params = useLocalSearchParams();
+
+    // Match the params to FlightInfo type
+    const flightInfo: FlightInfo = {
+        flightNumber: params.flightNumber as string,
+        departure: params.departure as string,
+        arrival: params.arrival as string,
+        departureTime: params.departureTime as string,
+        arrivalTime: params.arrivalTime as string,
+        date: params.date as string,
+        gate: params.gate as string,
+        status: params.status as string,
+        duration: params.duration as string,
+    };
+
+    return (
+        <ScrollView style={styles.container}>
+
+            {/* Alternative flight section */}
+            <View style={styles.section}>
+            </View>
+
+        </ScrollView>
+    );
+}
+
+const styles = StyleSheet.create({
+    // Layout
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        paddingHorizontal: 30,
+    },
+    section: {
+        marginTop: 20,
+        marginBottom: 20,
+    },
+});
