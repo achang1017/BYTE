@@ -20,7 +20,7 @@ export default function FlightScreen() {
                     throw new Error('User token not available');
                 }
 
-                const response = await fetch('http://localhost:3000/api/flights', {
+                const response = await fetch('http://localhost:3000/api/gmail/flights', {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },

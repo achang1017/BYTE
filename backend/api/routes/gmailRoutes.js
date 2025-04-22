@@ -1,5 +1,5 @@
 const express = require('express');
-const { getFlightEmails } = require('../services/gmailService');
+const { getFlightEmails } = require('../../services/gmailService');
 const router = express.Router();
 
 router.get('/flights', async (req, res) => {
