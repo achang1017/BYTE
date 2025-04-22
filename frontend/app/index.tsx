@@ -56,6 +56,41 @@ export default function LoginScreen() {
         }
     }, [response]);
 
+    // this is to test putting user info into db -- just for testing! will delete later
+    /*
+    useEffect(() => {
+        if (response?.type === 'success' && response.authentication) {
+            const idToken = response.authentication.idToken;
+            const accessToken = response.authentication.accessToken;
+
+            if (idToken && accessToken) {
+                const credential = GoogleAuthProvider.credential(idToken);
+                signInWithCredential(auth, credential)
+                    .then(async () => {
+                        setAccessToken(accessToken);
+                        const userEmail = auth.currentUser?.email;
+                        if (userEmail) {
+                            const response = await fetch('http://localhost:3000/api/user', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    email: userEmail,
+                                }),
+                            });
+                        }
+                        alert('Signed in with Google + Firebase!');
+                        router.replace('/(tabs)/home');
+                    })
+                    .catch((error) => {
+                        alert('Firebase sign-in failed: ' + error.message);
+                    });
+            }
+        }
+    }, [response]);
+    */
+
 
     const signIn = async () => {
         try {
