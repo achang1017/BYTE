@@ -1,5 +1,5 @@
 const express = require('express');
-const { db } = require('../firebase/firebaseInit');
+const { db } = require('../../firebase/firebaseInit');
 const router = express.Router();
 
 // we don't use this now but can use later to get flight data from db
