@@ -26,6 +26,8 @@ export default function LoginScreen() {
         webClientId: googleClientIds?.web,
         iosClientId: googleClientIds?.ios,
         androidClientId: googleClientIds?.android,
+        scopes: ['profile', 'email', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/gmail.readonly'],
+        useProxy: true,
     };
 
     const [request, response, signInwithGoogle] = Google.useAuthRequest(config);
