@@ -8,23 +8,34 @@ import { FlightInfo } from '@/dataType/flight';
 import { AlertType, Alert } from '@/dataType/alert';
 import Notification from '@/components/notification';
 
+<<<<<<< Updated upstream
 
 export default function Home() {
 
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
+=======
+export default function Home() {
+  const userImage = '../../assets/images/user-icon.png';
+  const user = auth.currentUser;
+  const { gmailAccessToken } = useAuth();
+>>>>>>> Stashed changes
 
   const displayName = user?.displayName || 'User';
   const userPhoto = user?.photoURL || userImage;
 
-
-  // connect with firbase 
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
+<<<<<<< Updated upstream
+=======
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+>>>>>>> Stashed changes
 
   useEffect(() => {
+    if (!gmailAccessToken) return;
 
     async function fetchFlightData() {
       try {
+<<<<<<< Updated upstream
         const userToken = await user?.getIdToken();
 
         if (!userToken) {
@@ -34,6 +45,11 @@ export default function Home() {
         const response = await fetch('http://localhost:5000/api/flights', {
           headers: {
             Authorization: `Bearer ${userToken}`,
+=======
+        const response = await fetch('http://localhost:3000/api/gmail/flights', {
+          headers: {
+            Authorization: `Bearer ${gmailAccessToken}`,
+>>>>>>> Stashed changes
           },
         });
 
@@ -44,14 +60,12 @@ export default function Home() {
         const data = await response.json();
         setFlightInfo(data[0]);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching flight info:', err);
       }
     }
 
     fetchFlightData();
-  }, []);
-
-  const [alerts, setAlerts] = useState<Alert[]>([]);
+  }, [gmailAccessToken]);
 
   useEffect(() => {
     if (!flightInfo) return;
@@ -72,15 +86,13 @@ export default function Home() {
     setAlerts(newAlerts);
   }, [flightInfo]);
 
-
   const dismissAlert = (id: number) => {
-    setAlerts(prev => prev.filter(alert => alert.id !== id));
+    setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   };
-
 
   return (
     <ScrollView style={styles.container}>
-      {/*User Info Header */}
+      {/* User Info Header */}
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>Hello {displayName}</Text>
@@ -96,7 +108,7 @@ export default function Home() {
 
       {/* Alert section */}
       <View style={styles.section}>
-        {alerts.map(alert => (
+        {alerts.map((alert) => (
           <Notification
             key={alert.id}
             alertType={alert.type}
@@ -104,14 +116,12 @@ export default function Home() {
             onDismiss={() => dismissAlert(alert.id)}
           />
         ))}
-
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  // Layout
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -121,8 +131,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-
-  // Header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -136,8 +144,6 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
   },
-
-  // Text
   title: {
     fontSize: 21,
     fontWeight: 'bold',

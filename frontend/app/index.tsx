@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { Text, View, StyleSheet, KeyboardAvoidingView, TextInput, Button, Image, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
@@ -28,9 +29,51 @@ export default function LoginScreen() {
         androidClientId: googleClientIds?.android,
         scopes: ['profile', 'email', 'https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/gmail.readonly'],
         useProxy: true,
+=======
+import {
+    Text,
+    View,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Image,
+    TouchableOpacity,
+  } from 'react-native';
+  import { useEffect } from 'react';
+  import { auth } from '../firebase';
+  import {
+    signInWithCredential,
+    GoogleAuthProvider,
+  } from 'firebase/auth';
+  import { useRouter } from 'expo-router';
+  import Constants from 'expo-constants';
+  import { useAuth } from '../authContext';
+  
+  import * as Google from 'expo-auth-session/providers/google';
+  import * as WebBrowser from 'expo-web-browser';
+  
+  WebBrowser.maybeCompleteAuthSession();
+  
+  const googleClientIds = Constants.expoConfig?.extra?.googleClientIds;
+  
+  export default function LoginScreen() {
+    const router = useRouter();
+    const { setAccessToken, setGmailAccessToken, setFirebaseReady } = useAuth();
+  
+    const config = {
+      webClientId: googleClientIds?.web,
+      iosClientId: googleClientIds?.ios,
+      androidClientId: googleClientIds?.android,
+      scopes: [
+        'profile',
+        'email',
+        'https://www.googleapis.com/auth/calendar',
+        'https://www.googleapis.com/auth/gmail.readonly',
+      ],
+>>>>>>> Stashed changes
     };
-
+  
     const [request, response, signInwithGoogle] = Google.useAuthRequest(config);
+<<<<<<< Updated upstream
 
     useEffect(() => {
         if (response?.type === 'success' && response.authentication) {
@@ -47,8 +90,31 @@ export default function LoginScreen() {
                         alert('Firebase sign-in failed: ' + error.message);
                     });
             }
+=======
+  
+    useEffect(() => {
+      if (response?.type === 'success' && response.authentication) {
+        const idToken = response.authentication.idToken;
+        const accessToken = response.authentication.accessToken;
+  
+        if (idToken && accessToken) {
+          const credential = GoogleAuthProvider.credential(idToken);
+  
+          signInWithCredential(auth, credential)
+            .then(() => {
+              setAccessToken(accessToken);
+              setGmailAccessToken(accessToken); // ✅ Save for Gmail API
+              setFirebaseReady(true);
+              router.replace('/(tabs)/home');   // ✅ Navigate
+            })
+            .catch((error) => {
+              alert('Firebase sign-in failed: ' + error.message);
+            });
+>>>>>>> Stashed changes
         }
+      }
     }, [response]);
+<<<<<<< Updated upstream
 
 
 
@@ -118,80 +184,65 @@ export default function LoginScreen() {
                 </TouchableOpacity>
             </KeyboardAvoidingView>
         </View>
+=======
+  
+    return (
+      <View style={styles.container}>
+        <Image
+          source={require('../assets/images/splash-icon.png')}
+          style={styles.logo}
+        />
+        <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
+          <Text style={styles.subTitle}>SAP Concur</Text>
+          <TouchableOpacity
+            style={styles.signInwithGoogle}
+            onPress={() => signInwithGoogle()}
+          >
+            <Text style={styles.signInButtonText}>Sign in with Google</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </View>
+>>>>>>> Stashed changes
     );
-}
-
-const styles = StyleSheet.create({
+  }
+  
+  const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: 30,
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 30,
     },
     logo: {
-        width: 300,
-        height: 300,
-        marginBottom: 20,
-        resizeMode: 'contain',
+      width: 300,
+      height: 300,
+      marginBottom: 20,
+      resizeMode: 'contain',
     },
     formContainer: {
-        width: '100%',
+      width: '100%',
     },
     subTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        alignSelf: 'flex-start',
-        marginBottom: 10,
-        color: '#000',
-    },
-    input: {
-        width: '100%',
-        height: 50,
-        borderColor: '#000',
-        borderWidth: 1,
-        borderRadius: 12,
-        paddingHorizontal: 15,
-        marginBottom: 15,
-        backgroundColor: '#fff',
-    },
-    signUpButton: {
-        backgroundColor: '#C9D3E3',
-        width: '100%',
-        height: 50,
-        borderRadius: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
+      fontSize: 18,
+      fontWeight: '600',
+      alignSelf: 'flex-start',
+      marginBottom: 10,
+      color: '#000',
     },
     signInwithGoogle: {
-        backgroundColor: '#012A86',
-        width: '100%',
-        height: 50,
-        borderRadius: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
+      backgroundColor: '#012A86',
+      width: '100%',
+      height: 50,
+      borderRadius: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 10,
     },
     signInButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
+      color: '#fff',
+      fontSize: 16,
+      fontWeight: 'bold',
     },
-    footerLogo: {
-        position: 'absolute',
-        bottom: 30,
-        right: 30,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    footerText: {
-        fontWeight: 'bold',
-        color: '#003399',
-        marginRight: 5,
-    },
-    footerIcon: {
-        width: 24,
-        height: 24,
-    },
-});
+  });
+  
