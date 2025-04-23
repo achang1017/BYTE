@@ -1,17 +1,18 @@
 const { google } = require('googleapis');
 const extractFlightInfo = require('../utils/extractFlightInfo');
 
-exports.getFlightEmails = async (token) => {
+exports.getFlightEmails = async (accessToken) => {
   try {
     const oauth2Client = new google.auth.OAuth2();
-    oauth2Client.setCredentials({ access_token: token });
+    oauth2Client.setCredentials({ access_token: accessToken });
 
     const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
+    // Search for emails with 'flight' or 'itinerary' in the subject
     const res = await gmail.users.messages.list({
       userId: 'me',
       q: 'subject:(flight OR itinerary)',
-      maxResults: 5,
+      maxResults: 10,
     });
 
     const messages = res.data.messages || [];
@@ -32,14 +33,17 @@ exports.getFlightEmails = async (token) => {
 
       const html = Buffer.from(bodyData, 'base64').toString('utf-8');
       const flight = extractFlightInfo(html);
-      if (flight) parsedFlights.push(flight);
+
+      if (flight) {
+        console.log('Parsed flight:', flight); // ✅ Log what's being returned
+        parsedFlights.push(flight);
+      }
     }
 
-    return parsedFlights;
+    // ✅ Return most recent flights first
+    return parsedFlights.reverse();
   } catch (error) {
     console.error('Gmail API error:', error);
     throw error;
   }
 };
-
-console.log('Parsed flight:', flight);
