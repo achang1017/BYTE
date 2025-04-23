@@ -2,54 +2,32 @@ import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 
 import { auth } from '../../firebase';
+import { useAuth } from '../../authContext';
 
 import UpcomingFlight from '@/components/upcomingFlight';
 import { FlightInfo } from '@/dataType/flight';
 import { AlertType, Alert } from '@/dataType/alert';
 import Notification from '@/components/notification';
 
-<<<<<<< Updated upstream
-
-export default function Home() {
-
-  const userImage = '../../assets/images/user-icon.png';
-  const user = auth.currentUser;
-=======
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
   const { gmailAccessToken } = useAuth();
->>>>>>> Stashed changes
 
   const displayName = user?.displayName || 'User';
   const userPhoto = user?.photoURL || userImage;
 
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
-<<<<<<< Updated upstream
-=======
   const [alerts, setAlerts] = useState<Alert[]>([]);
->>>>>>> Stashed changes
 
   useEffect(() => {
     if (!gmailAccessToken) return;
 
     async function fetchFlightData() {
       try {
-<<<<<<< Updated upstream
-        const userToken = await user?.getIdToken();
-
-        if (!userToken) {
-          throw new Error('User token not available');
-        }
-
-        const response = await fetch('http://localhost:5000/api/flights', {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-=======
         const response = await fetch('http://localhost:3000/api/gmail/flights', {
           headers: {
             Authorization: `Bearer ${gmailAccessToken}`,
->>>>>>> Stashed changes
           },
         });
 
