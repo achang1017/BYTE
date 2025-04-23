@@ -3,6 +3,7 @@ import { Stack, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
 import { auth } from '../firebase'; // import your shared auth instance
+import { AuthProvider } from '../authContext';
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
@@ -29,8 +30,10 @@ export default function RootLayout() {
   }, [user, initializing]);
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-    </Stack>
+    <AuthProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+      </Stack>
+    </AuthProvider>
   );
 }

@@ -9,4 +9,5 @@ export type FlightInfo = {
     arrivalTime: string;
     duration: string;
     status: string;
+    
 };
