@@ -1,36 +1,45 @@
 const { google } = require('googleapis');
 const extractFlightInfo = require('../utils/extractFlightInfo');
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  'http://localhost:3000/oauth2callback' // Adjust redirect URI if needed
-);
+exports.getFlightEmails = async (token) => {
+  try {
+    const oauth2Client = new google.auth.OAuth2();
+    oauth2Client.setCredentials({ access_token: token });
 
-async function getFlightEmails(userToken) {
-  oauth2Client.setCredentials({ access_token: userToken });
+    const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
-
-  const res = await gmail.users.messages.list({
-    userId: 'me',
-    q: 'subject:flight OR itinerary',
-  });
-
-  const messages = res.data.messages || [];
-  const flightDetails = [];
-
-  for (const message of messages) {
-    const msg = await gmail.users.messages.get({
+    const res = await gmail.users.messages.list({
       userId: 'me',
-      id: message.id,
+      q: 'subject:(flight OR itinerary)',
+      maxResults: 5,
     });
 
-    const flightInfo = extractFlightInfo(msg.data);
-    if (flightInfo) flightDetails.push(flightInfo);
+    const messages = res.data.messages || [];
+    const parsedFlights = [];
+
+    for (const msg of messages) {
+      const msgData = await gmail.users.messages.get({
+        userId: 'me',
+        id: msg.id,
+        format: 'full',
+      });
+
+      const parts = msgData.data.payload.parts || [];
+      const htmlPart = parts.find(p => p.mimeType === 'text/html');
+      const bodyData = htmlPart?.body?.data;
+
+      if (!bodyData) continue;
+
+      const html = Buffer.from(bodyData, 'base64').toString('utf-8');
+      const flight = extractFlightInfo(html);
+      if (flight) parsedFlights.push(flight);
+    }
+
+    return parsedFlights;
+  } catch (error) {
+    console.error('Gmail API error:', error);
+    throw error;
   }
+};
 
-  return flightDetails;
-}
-
-module.exports = { getFlightEmails };
+console.log('Parsed flight:', flight);
