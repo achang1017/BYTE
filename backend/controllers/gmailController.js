@@ -1,22 +1,23 @@
-const { getFlightEmails } = require('../services/gmailService');
+const { getFlightEmails } = require('./gmailService');
 
-exports.getFlightsFromGmail = async (req, res) => {
+exports.getFlights = async (req, res) => {
+  const accessToken = req.headers.authorization?.split(' ')[1];
+
+  if (!accessToken) {
+    return res.status(401).json({ error: 'Access token missing' });
+  }
+
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    const flights = await getFlightEmails(accessToken);
 
-    if (!token) {
-      return res.status(401).json({ error: 'Missing Gmail access token' });
-    }
+    const sortedFlights = flights
+      .filter(f => f.departureTime && f.departureTime !== 'Unknown')
+      .sort((a, b) => new Date(a.departureTime) - new Date(b.departureTime));
 
-    const flights = await getFlightEmails(token);
-
-    if (!flights.length) {
-      return res.status(404).json({ message: 'No flights found in Gmail' });
-    }
-
-    res.json(flights);
+    const closestFlight = sortedFlights[0] || null;
+    res.json([closestFlight]);
   } catch (err) {
-    console.error('Controller error:', err.message);
-    res.status(500).json({ error: 'Failed to fetch flight data' });
+    console.error('Error fetching Gmail flights:', err);
+    res.status(500).json({ error: 'Failed to fetch Gmail flight info' });
   }
 };
