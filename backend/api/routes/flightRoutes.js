@@ -1,12 +1,14 @@
 const express = require('express');
 const { db } = require('../../firebase/firebaseInit');
 const router = express.Router();
+const flightController = require('../controllers/flightController');
 
 // we don't use this now but can use later to get flight data from db
+router.get('/user/:userId', flightController.getNextUpcomingFlight);
 router.get("/:flightNumber", async (req, res) => {
     try {
         const flightNumber = req.params.flightNumber;
-        
+
         if (!flightNumber) {
             return res.status(400).json({
                 status: "error",
