@@ -121,4 +121,3 @@ import {
       fontWeight: 'bold',
     },
   });
-  
