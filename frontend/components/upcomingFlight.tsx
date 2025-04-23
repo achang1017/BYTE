@@ -1,10 +1,38 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { FlightInfo } from '@/dataType/flight';
 import { useRouter } from 'expo-router';
+import { format, parseISO, differenceInMinutes } from 'date-fns';
 
 type Props = {
   flightInfo: FlightInfo | null;
 };
+
+function formatTime(isoTime: string): string {
+  try {
+    return format(parseISO(isoTime), 'h:mm a');
+  } catch {
+    return 'Unknown';
+  }
+}
+
+function formatDate(dateString: string): string {
+  try {
+    return format(parseISO(dateString), 'MMM d, yyyy');
+  } catch {
+    return 'Unknown';
+  }
+}
+
+function getDuration(start: string, end: string): string {
+  try {
+    const minutes = differenceInMinutes(parseISO(end), parseISO(start));
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h}h ${m}m`;
+  } catch {
+    return '—';
+  }
+}
 
 export default function UpcomingFlight({ flightInfo }: Props) {
   const router = useRouter();
@@ -24,14 +52,14 @@ export default function UpcomingFlight({ flightInfo }: Props) {
         {/* Header */}
         <View style={styles.headerRow}>
           <Text style={styles.sectionTitle}>Upcoming Flight</Text>
-          <Text style={styles.text}>{flightInfo.date}</Text>
+          <Text style={styles.text}>{formatDate(flightInfo.date)}</Text>
         </View>
 
         {/* Flight Path */}
         <View style={styles.flightRow}>
           <View style={styles.locationBox}>
             <Text style={styles.code}>{flightInfo.departure}</Text>
-            <Text style={styles.text}>{flightInfo.departureTime}</Text>
+            <Text style={styles.text}>{formatTime(flightInfo.departureTime)}</Text>
           </View>
 
           <View style={styles.middleBox}>
@@ -39,12 +67,14 @@ export default function UpcomingFlight({ flightInfo }: Props) {
               source={require('../assets/images/plane.png')}
               style={styles.planeIcon}
             />
-            <Text style={styles.text}>{flightInfo.duration}</Text>
+            <Text style={styles.text}>
+              {getDuration(flightInfo.departureTime, flightInfo.arrivalTime)}
+            </Text>
           </View>
 
           <View style={styles.locationBox}>
             <Text style={styles.code}>{flightInfo.arrival}</Text>
-            <Text style={styles.text}>{flightInfo.arrivalTime}</Text>
+            <Text style={styles.text}>{formatTime(flightInfo.arrivalTime)}</Text>
           </View>
         </View>
 
