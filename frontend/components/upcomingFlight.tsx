@@ -35,9 +35,12 @@ function getDuration(start: string, end: string): string {
 }
 
 export default function UpcomingFlight({ flightInfo }: Props) {
-  const router = useRouter();
+    if (!flightInfo) return null;
 
-  if (!flightInfo) return null;
+    const router = useRouter();
+    const newArriavaltime = new Date(flightInfo.arrivalTime);
+    const newDeparturetime = new Date(flightInfo.departureTime);
+
 
   return (
     <TouchableOpacity
@@ -55,12 +58,14 @@ export default function UpcomingFlight({ flightInfo }: Props) {
           <Text style={styles.text}>{formatDate(flightInfo.date)}</Text>
         </View>
 
-        {/* Flight Path */}
-        <View style={styles.flightRow}>
-          <View style={styles.locationBox}>
-            <Text style={styles.code}>{flightInfo.departure}</Text>
-            <Text style={styles.text}>{formatTime(flightInfo.departureTime)}</Text>
-          </View>
+                {/* Flight Route Info */}
+                <View style={styles.flightRow}>
+                    <View style={styles.locationBox}>
+                        <Text style={styles.code}>{flightInfo.departure}</Text>
+                        <Text style={styles.text}>{newDeparturetime.toDateString()}</Text>
+                        <Text style={styles.text}>{newDeparturetime.toTimeString()}</Text>
+
+                    </View>
 
           <View style={styles.middleBox}>
             <Image
@@ -72,11 +77,12 @@ export default function UpcomingFlight({ flightInfo }: Props) {
             </Text>
           </View>
 
-          <View style={styles.locationBox}>
-            <Text style={styles.code}>{flightInfo.arrival}</Text>
-            <Text style={styles.text}>{formatTime(flightInfo.arrivalTime)}</Text>
-          </View>
-        </View>
+                    <View style={styles.locationBox}>
+                        <Text style={styles.code}>{flightInfo.arrival}</Text>
+                        <Text style={styles.text}>{newArriavaltime.toDateString()}</Text>
+                        <Text style={styles.text}>{newArriavaltime.toTimeString()}</Text>
+                    </View>
+                </View>
 
         {/* Flight Details */}
         <View style={styles.detailsRow}>
@@ -94,51 +100,58 @@ export default function UpcomingFlight({ flightInfo }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 20,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  flightRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  detailsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  locationBox: {
-    alignItems: 'center',
-  },
-  middleBox: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  planeIcon: {
-    width: 20,
-    height: 20,
-    marginBottom: 4,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  code: {
-    fontSize: 21,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  text: {
-    color: '#000',
-  },
+    // Container
+    container: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#000',
+        padding: 20,
+    },
+
+    // Sections
+    headerRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    flightRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 20,
+    },
+    detailsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+
+    // Elements
+    locationBox: {
+        alignItems: 'center',
+    },
+    middleBox: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    planeIcon: {
+        width: 20,
+        height: 20,
+        marginBottom: 4,
+    },
+
+    // Text styles
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    code: {
+        fontSize: 21,
+        fontWeight: 'bold',
+        color: '#000',
+    },
+    text: {
+        color: '#000',
+    },
 });
