@@ -5,18 +5,19 @@ import { IconSymbol } from '@/app-example/components/ui/IconSymbol.ios';
 
 type Props = {
     flightInfo: AltFlightInfo | null;
+    isSelected?: boolean;
 };
 
-export default function AlternativeFlight({ flightInfo }: Props) {
+export default function AlternativeFlight({ flightInfo, isSelected }: Props) {
     if (!flightInfo) return null;
 
     const router = useRouter();
-    const newArriavaltime = new Date(flightInfo.arrivalTime);
-    const newDeparturetime = new Date(flightInfo.departureTime);
+    const newArriavaltime = new Date(flightInfo.arrivalTime.toString());
+    const newDeparturetime = new Date(flightInfo.departureTime.toString());
 
 
     return (
-        <View style={styles.container} >
+        <View style={[styles.container, (isSelected && { backgroundColor: '#1F5FC1' })]} >
 
             {/* Header Row */}
             <View style={styles.headerRow}>
@@ -24,29 +25,28 @@ export default function AlternativeFlight({ flightInfo }: Props) {
                     <View>
                         <View style={styles.flightRow}>
                             <View style={styles.locationBox}>
-                                <Text style={styles.sectionTitle}>{flightInfo.departure} → </Text>
-                                <Text style={styles.sectionTitle}>{flightInfo.arrival}</Text>
+                                <Text style={[styles.sectionTitle, isSelected && { color: '#FFFFFF' }]}>{flightInfo.departure} → </Text>
+                                <Text style={[styles.sectionTitle, isSelected && { color: '#FFFFFF' }]}>{flightInfo.arrival}</Text>
                             </View>
-                            <Text style={styles.fadedtext}>{newArriavaltime.toDateString()}</Text>
+                            <Text style={[styles.fadedtext, isSelected && { color: '#FFFFFF' }]}>{newArriavaltime.toDateString()}</Text>
                         </View>
-                        <Text style={styles.fadedtext}>{flightInfo.flightNumber}</Text>
+                        <Text style={[styles.fadedtext, isSelected && { color: '#FFFFFF' }]}>{flightInfo.flightNumber}</Text>
                     </View>
-                    <Text style={[styles.riskIcon, { backgroundColor: getRiskColor(flightInfo.riskLevel) }]}>
-                        {flightInfo.riskLevel} risk</Text>
+
                 </View>
 
                 <View style={styles.timeRow}>
                     <View style={styles.timeBox}>
-                        <Text style={{ fontWeight: 'bold' }}>Departure</Text>
-                        <Text>{newDeparturetime.getHours()}</Text>
+                        <Text style={[{ fontWeight: 'bold' }, isSelected && { color: '#FFFFFF' }]}>Departure</Text>
+                        <Text style={[isSelected && { color: '#FFFFFF' }]}>{newDeparturetime.getHours()}</Text>
                     </View>
                     <View style={styles.timeBox}>
-                        <Text style={{ fontWeight: 'bold' }}>Duration</Text>
-                        <Text>{flightInfo.duration}</Text>
+                        <Text style={[{ fontWeight: 'bold' }, isSelected && { color: '#FFFFFF' }]}>Duration</Text>
+                        <Text style={[isSelected && { color: '#FFFFFF' }]}>{flightInfo.duration}</Text>
                     </View>
                     <View style={styles.timeBox}>
-                        <Text style={{ fontWeight: 'bold' }}>Arrival</Text>
-                        <Text>{newArriavaltime.getUTCDate()}</Text>
+                        <Text style={[{ fontWeight: 'bold' }, isSelected && { color: '#FFFFFF' }]}>Arrival</Text>
+                        <Text style={[isSelected && { color: '#FFFFFF' }]}>{newArriavaltime.getUTCDate()}</Text>
                     </View>
                 </View>
             </View>
@@ -55,48 +55,35 @@ export default function AlternativeFlight({ flightInfo }: Props) {
             {/* Additioanl information Details */}
             <View style={styles.detailsRow}>
                 <View style={styles.eachRow}>
-                    <IconSymbol name="calendar" size={20} color='black' />
+                    <IconSymbol name="calendar" size={20} color={isSelected ? '#fff' : 'black'} />
                     {flightInfo.meetingConflicts > 1 ? (
-                        <Text style={styles.text}>{flightInfo.meetingConflicts} meeting conflicts</Text>
+                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.meetingConflicts} meeting conflicts</Text>
                     ) : (
-                        <Text style={styles.text}>No meeting conflict</Text>
+                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>No meeting conflict</Text>
                     )}
                 </View>
                 <View style={styles.eachRow}>
-                    <IconSymbol name="dollarsign" size={20} color='black' />
+                    <IconSymbol name="dollarsign" size={20} color={isSelected ? '#fff' : 'black'} />
 
                     {flightInfo.changeFee > 0 ? (
-                        <Text style={styles.text}>{flightInfo.changeFee} change fee</Text>)
-                        : (<Text style={styles.text}>No change fee</Text>)
+                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.changeFee} change fee</Text>)
+                        : (<Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>No change fee</Text>)
                     }
                 </View>
                 <View style={styles.eachRow}>
-                    <IconSymbol name="carseat.left" size={20} color='black' />
+                    <IconSymbol name="carseat.left" size={20} color={isSelected ? '#fff' : 'black'} />
 
-                    <Text style={styles.text}>{flightInfo.seat} </Text>
+                    <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.seat} </Text>
                 </View>
                 {flightInfo.layover > 0 && (
                     <View style={styles.eachRow}>
-                        <IconSymbol name="airplane" size={20} color='black' />
-                        <Text style={styles.text}>{flightInfo.layover} Layover flight</Text>
+                        <IconSymbol name="airplane" size={20} color={isSelected ? '#fff' : 'black'} />
+                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.layover} Layover flight</Text>
                     </View>
                 )}
             </View>
         </View>
     );
-}
-
-function getRiskColor(level: string) {
-    switch (level.toLowerCase()) {
-        case 'low':
-            return '#32D400';
-        case 'medium':
-            return '#FDB03C';
-        case 'high':
-            return '#FB0000';
-        default:
-            return 'gray'; // fallback
-    }
 }
 
 
