@@ -75,7 +75,7 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
             </View>
         );
     } else if (alertType === AlertType.MeetingConflict) {
-        return (<View style={styles.container}>
+        return conflicts.length > 0 && (<View style={styles.container}>
             {/* Header Row */}
             <View style={styles.headerRow}>
                 <Image

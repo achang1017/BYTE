@@ -133,6 +133,7 @@ export default function FlightTracker({ flightInfo }: Props) {
                         </View>
                     ))}
 
+
                 </View>
             </View>
 
