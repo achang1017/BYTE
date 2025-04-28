@@ -15,13 +15,12 @@ export type AltFlightInfo = {
     altID: string;
     tripID: string;
     flightNumber: string;
-    departureTime: Date;
-    arrivalTime: Date;
+    departureTime: String;
+    arrivalTime: String;
     duration: string;
     changeFee: number;
     isRecommended: boolean;
     meetingConflicts: number;
-    riskLevel: string;
     departure: string;
     arrival: string;
     seat: string;

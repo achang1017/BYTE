@@ -1,4 +1,4 @@
-import {  View, StyleSheet, ScrollView} from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { FlightInfo } from '@/dataType/flight';
 import UpcomingFlight from '@/components/upcomingFlight';
@@ -13,31 +13,29 @@ export default function FlightScreen() {
     const [flightInfos, setFlightInfos] = useState<FlightInfo[] | null>(null);
 
     useEffect(() => {
+        if (!accessToken) return;
 
         async function fetchFlightData() {
             try {
-                if (!accessToken) {
-                    throw new Error('User token not available');
-                }
-
                 const response = await fetch('http://localhost:3000/api/gmail/flights', {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 });
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch flight data');
                 }
 
                 const data = await response.json();
-                setFlightInfos(data as FlightInfo[]);
+                setFlightInfos(data);
             } catch (err) {
-                console.error(err);
+                console.error('Error fetching flight info:', err);
             }
         }
 
         fetchFlightData();
-    }, []);
+    }, [accessToken]);
 
     return (
         <ScrollView style={styles.container}>
