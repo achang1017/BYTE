@@ -77,6 +77,7 @@ export default function SettingScreen() {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Personal Setting</Text>
+<<<<<<< HEAD
                     <Text style={styles.sectionText}>Automatic Calendar Sync: { autoCalendar }</Text>
                     <Text style={styles.sectionText}>AI Generated Recommended Flights: { aiFlightRec }</Text>
                     <Text style={styles.sectionText}>Personal Data Sync: { dataSync }</Text>
@@ -86,6 +87,16 @@ export default function SettingScreen() {
                             <Image source={require('../../assets/images/arrow.png')} style={styles.arrow} />
                         </View>
                     </TouchableOpacity>
+=======
+                    <Text style={styles.sectionText}>Automatic Calendar Sync: </Text>
+                    <Text style={styles.sectionText}>AI Generated Recommended Flights: </Text>
+                    <TouchableHighlight onPress={() => { router.push({
+                        pathname: '/(pages)/alternativeFlights',
+                        params: { },
+                    })}}>
+                        <Text style={styles.sectionText} >Preference</Text>
+                    </TouchableHighlight>
+>>>>>>> 07cf87d (Set router for preference page)
                     <Text style={styles.sectionTextLast}>Privacy Access Form: </Text>
                 </View>
             </View>
