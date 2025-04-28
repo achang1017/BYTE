@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { AltFlightInfo, FlightInfo } from '@/dataType/flight';
 import { useRouter } from 'expo-router';
-import { IconSymbol } from '@/app-example/components/ui/IconSymbol.ios';
+import { IconSymbol } from '@/components/ui/IconSymbol.ios';
 
 type Props = {
     flightInfo: AltFlightInfo | null;

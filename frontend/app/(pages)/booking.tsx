@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FlightInfo, AltFlightInfo } from '@/dataType/flight';
-import { IconSymbol } from '@/app-example/components/ui/IconSymbol.ios';
+import { IconSymbol } from '@/components/ui/IconSymbol.ios';
 import { auth } from '../../firebase';
 
 
