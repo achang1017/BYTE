@@ -7,9 +7,14 @@ exports.getFlightEmails = async (accessToken) => {
 
   const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
+  // Calculate the max date (e.g., 14 days ago)
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() - 14);
+  const maxDateString = maxDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+
   const res = await gmail.users.messages.list({
     userId: 'me',
-    q: 'subject:(flight OR itinerary)',
+    q: `subject:(flight OR itinerary) after:${maxDateString}`,
     maxResults: 10,
   });
 
