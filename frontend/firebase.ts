@@ -5,6 +5,7 @@ import {
     initializeAuth,
     GoogleAuthProvider,
 } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore'; // import Firestore
 
 const firebaseKeys = Constants.expoConfig?.extra?.firebase;
 
@@ -20,5 +21,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app); // initialize Firestore
 
-export { auth };
+export { auth, db }; // export Firestore
