@@ -11,7 +11,7 @@ app.use(express.json());
 app.use('/api', allRoutes);
 
 // New changes: Import Firestore routes
-const firestoreRoutes = require('./api/firestoreRoutes');
+const firestoreRoutes = require('./api/routes/firestoreRoutes');
 
 // New changes: Add Firestore route handlers
 app.use('/api/firestore', firestoreRoutes);
