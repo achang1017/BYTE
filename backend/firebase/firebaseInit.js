@@ -1,4 +1,6 @@
 const admin = require('firebase-admin');
+const serviceAccount = require('./byte-84b98-firebase-adminsdk-fbsvc-b1d6050e5c.json');
+
 
 const serviceAccount = {
   project_id: process.env.GOOGLE_CLOUD_PROJECT_ID,
@@ -6,9 +8,11 @@ const serviceAccount = {
   client_email: process.env.FIREBASE_CLIENT_EMAIL,
 };
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
 const db = admin.firestore();
 

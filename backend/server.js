@@ -1,22 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-const allRoutes = require('./api/api');
-
+// Middleware
 app.use(cors());
 app.use(express.json());
-app.use('/api', allRoutes);
 
-// New changes: Import Firestore routes
-const firestoreRoutes = require('./api/routes/firestoreRoutes');
+// Secure Firestore-backed route to get user-specific flight data
+const flightRoutes = require('./api/routes/flightRoutes');
+app.use('/api/flights', flightRoutes); // ✅ Flights now come from Firestore, not Gmail
 
-// New changes: Add Firestore route handlers
-app.use('/api/firestore', firestoreRoutes);
+// Optional: Additional routes can go here
+// const firestoreRoutes = require('./api/routes/firestoreRoutes');
+// app.use('/api/firestore', firestoreRoutes);
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Server init
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
-

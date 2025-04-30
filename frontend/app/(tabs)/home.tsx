@@ -12,8 +12,6 @@ import Notification from '@/components/notification';
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
-  const { gmailAccessToken } = useAuth();
-
   const displayName = user?.displayName || 'User';
   const userPhoto = user?.photoURL || userImage;
 
@@ -21,13 +19,16 @@ export default function Home() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
   useEffect(() => {
-    if (!gmailAccessToken) return;
-
     async function fetchFlightData() {
       try {
-        const response = await fetch('http://localhost:3000/api/gmail/flights', {
+        const currentUser = auth.currentUser;
+        if (!currentUser) return;
+
+        const token = await currentUser.getIdToken();
+
+        const response = await fetch('http://localhost:3000/api/flights', {
           headers: {
-            Authorization: `Bearer ${gmailAccessToken}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -36,14 +37,19 @@ export default function Home() {
         }
 
         const data = await response.json();
-        setFlightInfo(data[0]);
+
+        if (data.flights && data.flights.length > 0) {
+          setFlightInfo(data.flights[0]); // Assumes sorted by departureTime
+        } else {
+          console.log('No flights returned');
+        }
       } catch (err) {
-        console.error('Error fetching flight info:', err);
+        console.error('Error fetching flight info from Firestore:', err);
       }
     }
 
     fetchFlightData();
-  }, [gmailAccessToken]);
+  }, []);
 
   useEffect(() => {
     if (!flightInfo) return;
@@ -81,7 +87,11 @@ export default function Home() {
 
       {/* Upcoming flight section */}
       <View style={styles.section}>
-        <UpcomingFlight flightInfo={flightInfo} />
+        {flightInfo ? (
+          <UpcomingFlight flightInfo={flightInfo} />
+        ) : (
+          <Text>No upcoming flights</Text>
+        )}
       </View>
 
       {/* Alert section */}
