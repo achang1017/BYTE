@@ -1,4 +1,4 @@
-const { getFlightEmails } = require('./gmailService');
+const { getFlightEmails } = require('../services/gmailService');
 
 exports.getFlights = async (req, res) => {
   const accessToken = req.headers.authorization?.split(' ')[1];
@@ -8,12 +8,9 @@ exports.getFlights = async (req, res) => {
   }
 
   try {
-    const flights = await getFlightEmails(accessToken);
+    const sortedFlights = await getFlightEmails(accessToken);
 
-    const sortedFlights = flights
-      .filter(f => f.departureTime && f.departureTime !== 'Unknown')
-      .sort((a, b) => new Date(a.departureTime) - new Date(b.departureTime));
-
+    // Select the closest upcoming flight
     const closestFlight = sortedFlights[0] || null;
     res.json([closestFlight]);
   } catch (err) {

@@ -12,8 +12,7 @@ async function verifyFirebaseToken(req, res, next) {
   try {
     // verifyIdToken will throw if the token is invalid or expired
     const decoded = await admin.auth().verifyIdToken(idToken);
-    // attach the UID (and any other claims) to req.user
-    req.user = { uid: decoded.uid, email: decoded.email };
+    req.user = { uid: decoded.uid, email: decoded.email }; // Ensure user object is attached
     return next();
   } catch (err) {
     console.error('Firebase token verification failed:', err);

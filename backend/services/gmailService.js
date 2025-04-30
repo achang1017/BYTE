@@ -1,7 +1,6 @@
 const { google } = require('googleapis');
 const extractFlightInfo = require('../utils/extractFlightInfo');
 
-
 exports.getFlightEmails = async (accessToken) => {
   const oauth2Client = new google.auth.OAuth2();
   oauth2Client.setCredentials({ access_token: accessToken });
@@ -46,5 +45,11 @@ exports.getFlightEmails = async (accessToken) => {
     }
   }
 
-  return parsedFlights;
+  // Sort flights by departure time
+  const now = new Date();
+  const sortedFlights = parsedFlights
+    .filter(f => f.departureTime && f.departureTime !== 'Unknown' && new Date(f.departureTime) > now)
+    .sort((a, b) => new Date(a.departureTime) - new Date(b.departureTime));
+
+  return sortedFlights;
 };

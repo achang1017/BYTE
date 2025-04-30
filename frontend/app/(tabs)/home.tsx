@@ -1,7 +1,8 @@
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { useState, useEffect } from 'react';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { useAuth } from '../../authContext';
 
 import UpcomingFlight from '@/components/upcomingFlight';
@@ -18,36 +19,35 @@ export default function Home() {
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
-  useEffect(() => {
-    async function fetchFlightData() {
-      try {
-        const currentUser = auth.currentUser;
-        if (!currentUser) return;
+  async function fetchFlightData() {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
 
-        const token = await currentUser.getIdToken();
+      const userId = currentUser.uid;
+      const flightsQuery = query(
+        collection(db, 'flights'),
+        where('userId', '==', userId),
+        orderBy('departureTime')
+      );
 
-        const response = await fetch('http://localhost:3000/api/flights', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const querySnapshot = await getDocs(flightsQuery);
+      const flights = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...(doc.data() as FlightInfo),
+      }));
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch flight data');
-        }
-
-        const data = await response.json();
-
-        if (data.flights && data.flights.length > 0) {
-          setFlightInfo(data.flights[0]); // Assumes sorted by departureTime
-        } else {
-          console.log('No flights returned');
-        }
-      } catch (err) {
-        console.error('Error fetching flight info from Firestore:', err);
+      if (flights.length > 0) {
+        setFlightInfo(flights[0]); // Closest upcoming flight
+      } else {
+        console.log('No upcoming flights found');
       }
+    } catch (err) {
+      console.error('Error fetching flight info:', err);
     }
+  }
 
+  useEffect(() => {
     fetchFlightData();
   }, []);
 
