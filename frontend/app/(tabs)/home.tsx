@@ -1,7 +1,8 @@
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { useState, useEffect } from 'react';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { useAuth } from '../../authContext';
 
 import UpcomingFlight from '@/components/upcomingFlight';
@@ -20,30 +21,37 @@ export default function Home() {
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
-  useEffect(() => {
-    if (!gmailAccessToken) return;
+  async function fetchFlightDataFromFirestore() {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) return;
 
-    async function fetchFlightData() {
-      try {
-        const response = await fetch('http://localhost:3000/api/gmail/flights', {
-          headers: {
-            Authorization: `Bearer ${gmailAccessToken}`,
-          },
-        });
+      const userEmail = currentUser.email;
+      const flightsQuery = query(
+        collection(db, 'flights'),
+        where('userEmail', '==', userEmail),
+        orderBy('departureTime')
+      );
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch flight data');
-        }
+      const querySnapshot = await getDocs(flightsQuery);
+      const flights = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...(doc.data() as FlightInfo),
+      }));
 
-        const data = await response.json();
-        setFlightInfo(data[0]);
-      } catch (err) {
-        console.error('Error fetching flight info:', err);
+      if (flights.length > 0) {
+        setFlightInfo(flights[0]); // Set closest upcoming flight
+      } else {
+        console.log('No upcoming flights found');
       }
+    } catch (err) {
+      console.error('Error fetching flight info from Firestore:', err);
     }
+  }
 
-    fetchFlightData();
-  }, [gmailAccessToken]);
+  useEffect(() => {
+    fetchFlightDataFromFirestore();
+  }, []);
 
   useEffect(() => {
     if (!flightInfo) return;
@@ -81,7 +89,11 @@ export default function Home() {
 
       {/* Upcoming flight section */}
       <View style={styles.section}>
-        <UpcomingFlight flightInfo={flightInfo} />
+        {flightInfo ? (
+          <UpcomingFlight flightInfo={flightInfo} />
+        ) : (
+          <Text>No upcoming flights</Text>
+        )}
       </View>
 
       {/* Alert section */}
