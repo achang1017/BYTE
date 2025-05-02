@@ -8,11 +8,13 @@ import UpcomingFlight from '@/components/upcomingFlight';
 import { FlightInfo } from '@/dataType/flight';
 import { AlertType, Alert } from '@/dataType/alert';
 import Notification from '@/components/notification';
+import 'dotenv/config';
 
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
   const { gmailAccessToken } = useAuth();
+  const FLIGHT_API_KEY = process.env.FLIGHT_API_KEY;
 
   const displayName = user?.displayName || 'User';
   const userPhoto = user?.photoURL || userImage;
@@ -62,6 +64,84 @@ export default function Home() {
     ];
 
     setAlerts(newAlerts);
+  }, [flightInfo]);
+
+  useEffect(() => {
+    if (!flightInfo) return;
+
+    async function checkFlightInterruption() {
+      try {
+        if (!flightInfo?.departureTime || !flightInfo.flightNumber) {
+          throw new Error('Failed to get data from flightInfo');
+        }
+        const departureTimeUTC = new Date(flightInfo.departureTime).toISOString();
+
+        const response = await fetch(`https://aviation-edge.com/v2/public/timetable?key=${FLIGHT_API_KEY}&flight_iata=${flightInfo.flightNumber}&type=departure&dep_schTime=${departureTimeUTC}`);
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch flight schedule');
+        }
+
+        const data = await response.json();
+        const flight = data[0];
+
+        if (flight && flight.departure?.delay > 0) {
+          const flightNumberOnly = flightInfo.flightNumber.replace(/[A-Za-z]/g, '');
+          const date = new Date(flightInfo.departureTime).toISOString().split('T')[0]; 
+          const delayResponse = await fetch(`https://aviation-edge.com/v2/public/delay_reason?key=${FLIGHT_API_KEY}&flight_number=${flightNumberOnly}&date=${date}`)
+          
+          if (!delayResponse.ok) {
+            throw new Error('Failed to fetch flight delay reason');
+          }
+          
+          const delayData = await delayResponse.json();
+
+          const updatedFlightInfo: FlightInfo = {
+            ...flightInfo,
+            newDepartureTime: flight.departure.actualTime,
+            newArrivalTime: flight.arrival.actualTime,
+            status: flight.status,
+            delay: flight.departure.delay,
+            delayReason: delayData[0]?.delay?.reason,
+          };
+          setFlightInfo(updatedFlightInfo);
+          // need to add new flight data into db
+
+          const newAlert: Alert = {
+            id: Date.now(),
+            type: AlertType.FlightInteruption,
+            flightInfo: flightInfo,
+          };
+
+          setAlerts([newAlert]);
+        }
+
+        if (flight && flight.status == "canceled") {
+          const updatedFlightInfo: FlightInfo = {
+            ...flightInfo,
+            status: flight.status,
+          };
+          setFlightInfo(updatedFlightInfo);
+          // need to add new flight data into db
+
+          const newAlert: Alert = {
+            id: Date.now(),
+            type: AlertType.FlightInteruption,
+            flightInfo: flightInfo,
+          };
+
+          setAlerts([newAlert]);
+        }
+      } catch (err) {
+        console.error('Error checking flight interruption:', err);
+      }
+    }
+    const interval = setInterval(() => {
+      checkFlightInterruption();
+    }, 5 * 60 * 1000);
+
+    checkFlightInterruption();
+    return () => clearInterval(interval);
   }, [flightInfo]);
 
   const dismissAlert = (id: number) => {
