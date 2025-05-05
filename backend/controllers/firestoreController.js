@@ -1,4 +1,5 @@
 const { db } = require('../firebase/firebaseInit');
+const { Timestamp } = require('firebase-admin/firestore');
 
 /**
  * Secure and flexible Firestore collection fetcher.
@@ -40,6 +41,7 @@ exports.getCollection = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
 exports.addFlightData = async (req, res) => {
   try {
     const { departureTime, arrivalTime, ...otherData } = req.body;
@@ -60,3 +62,26 @@ exports.addFlightData = async (req, res) => {
     return res.status(500).json({ error: 'Unable to add flight data' });
   }
 };
+=======
+const getUpcomingFlights = async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const now = Timestamp.now();
+      const snapshot = await db
+        .collection('flights')
+        .where('userId', '==', userId)
+        .where('departure', '>=', now)
+        .get();
+  
+      const upcomingFlights = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      res.status(200).json(upcomingFlights);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+module.exports = { getCollection, getUpcomingFlights };
+>>>>>>> Stashed changes

@@ -1,6 +1,10 @@
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
+<<<<<<< Updated upstream
 import { useState, useEffect } from 'react';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+=======
+import { useState, useEffect, useLayoutEffect } from 'react';
+>>>>>>> Stashed changes
 
 import { auth, db } from '../../firebase';
 import { useAuth } from '../../authContext';
@@ -16,7 +20,9 @@ export default function Home() {
   const displayName = user?.displayName || 'User';
   const userPhoto = user?.photoURL || userImage;
 
-  const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
+  const [upcomingFlights, setUpcomingFlights] = useState<FlightInfo[]>([])
+  const [loading, setLoading] = useState(false);
+  const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null)
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
   async function fetchFlightData() {
@@ -70,6 +76,33 @@ export default function Home() {
     setAlerts(newAlerts);
   }, [flightInfo]);
 
+  useEffect(() => {
+    const fetchUpcomingFlights = async () => {
+      if (!user?.uid) return;
+
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/firestore/upcoming-flights/${user.uid}`
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch upcoming flights');
+        }
+
+        const data = await response.json();
+        setUpcomingFlights(data);
+      } catch (error) {
+        console.error('Error fetching upcoming flights:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpcomingFlights();
+  }, [user?.uid]);
+
+
   const dismissAlert = (id: number) => {
     setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   };
@@ -87,10 +120,19 @@ export default function Home() {
 
       {/* Upcoming flight section */}
       <View style={styles.section}>
+<<<<<<< Updated upstream
         {flightInfo ? (
           <UpcomingFlight flightInfo={flightInfo} />
         ) : (
           <Text>No upcoming flights</Text>
+=======
+      {loading ? (
+          <Text>Loading upcoming flights...</Text>
+        ) : upcomingFlights.length > 0 ? (
+          upcomingFlights.map((flight) => <UpcomingFlight key={flight.id} flightInfo={flight} />)
+        ) : (
+          <Text>No upcoming flights found.</Text>
+>>>>>>> Stashed changes
         )}
       </View>
 
