@@ -7,12 +7,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useEffect } from 'react';
-import { auth, db } from '../firebase'; // Firebase auth and Firestore
+import { auth, db } from '../firebase';
 import {
   signInWithCredential,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { getDoc, doc } from 'firebase/firestore'; // <-- new change: import for Firestore read
+import { getDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { useAuth } from '../authContext';
@@ -48,13 +48,13 @@ export default function LoginScreen() {
       const accessToken = response.authentication.accessToken;
 
       if (idToken && accessToken) {
-        const credential = GoogleAuthProvider.credential(idToken);
+        const credential = GoogleAuthProvider.credential(idToken, accessToken); // ✅ Updated here
 
         signInWithCredential(auth, credential)
           .then(async (userCredential) => {
             const user = userCredential.user;
 
-            // new change: fetch user preferences from Firestore
+            // Fetch user preferences from Firestore
             try {
               const docRef = doc(db, 'users', user.email ?? '');
               const docSnap = await getDoc(docRef);
