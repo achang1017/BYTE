@@ -1,4 +1,4 @@
-import { Text, View, ScrollView, Image, StyleSheet, Button, Alert, TouchableHighlight } from 'react-native';
+import { Text, View, ScrollView, Image, StyleSheet, Alert, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useRouter } from 'expo-router';
@@ -8,12 +8,11 @@ export default function SettingScreen() {
 
     const userImage = '../../assets/images/user-icon.png';
     const user = auth.currentUser;
-    
+
     const displayName = user?.displayName || 'User';
     const userPhoto = user?.photoURL || userImage;
     const userPhone = user?.phoneNumber || 'none';
     const userEmail = user?.email || "example@uw.edu";
-
 
     const handleSignOut = async () => {
         try {
@@ -26,7 +25,7 @@ export default function SettingScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            {/*User Settingheader */}
+            {/*User Setting Header */}
             <View style={styles.header}>
                 <Text style={styles.title}>User Setting</Text>
             </View>
@@ -47,14 +46,14 @@ export default function SettingScreen() {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Personal Setting</Text>
-                    <Text style={styles.sectionText}>Automatic Calendar Sync: </Text>
-                    <Text style={styles.sectionText}>AI Generated Recommended Flights: </Text>
-                    <TouchableHighlight onPress={() => { router.push({
-                        pathname: '/(pages)/alternativeFlights',
+                    <Text style={styles.sectionText}>Automatic Calendar Sync: {}</Text>
+                    <Text style={styles.sectionText}>AI Generated Recommended Flights: {}</Text>
+                    <TouchableOpacity onPress={() => { router.push({
+                        pathname: '/(pages)/preference',
                         params: { },
                     })}}>
                         <Text style={styles.sectionText} >Preference</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                     <Text style={styles.sectionTextLast}>Privacy Access Form: </Text>
                 </View>
             </View>

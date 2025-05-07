@@ -14,8 +14,8 @@ export default function PreferenceScreen() {
             <View style={styles.sections}>
                 {/* Service */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Sevice</Text>
-                    <View style={styles.sectionContent}>
+                    <Text style={styles.sectionTitle}>Enable features to help you reschedule.</Text>
+                    <View style={styles.sectionContentStart}>
                         <View style={styles.sectionText}>
                             <Text style={styles.sectionSubtitle}>Automatic Calendar Update</Text>
                             <Text style={styles.sectionDesc}>To automatically update new schedule on your calendar</Text>
@@ -127,6 +127,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     sectionTitle: {
+        fontSize: 15,
+        paddingBottom: 10,
+    },
+    sectionContentStart: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
