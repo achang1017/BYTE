@@ -31,6 +31,25 @@ export default function AlternativeFlightScreen() {
     };
 
     useEffect(() => {
+        
+        const fetchAlternativeFlights = async () => {
+            try {
+                const encodedFlightInfo = encodeURIComponent(JSON.stringify(flightInfo));
+                const response = await fetch(`http://localhost:3000/api/alternativeFlights?flightInfo=${encodedFlightInfo}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch alternative flights');
+                }
+                const altFlights = await response.json();
+                //setAlternativeFlights(altFlights);
+            } catch (error) {
+                console.error('Error fetching alternative flights:', error);
+            }
+        };
+        
+        fetchAlternativeFlights();
+        
+        // we can delete this after connecting with backend
+        /*
         setAlternativeFlights([
             {
                 altID: 'A123',
@@ -64,6 +83,7 @@ export default function AlternativeFlightScreen() {
                 layover: 2,
             },
         ]);
+        */
     }, []);
 
     const setRecommendedFilter = () => {
