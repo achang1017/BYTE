@@ -1,3 +1,5 @@
+// frontend/app/index.tsx
+
 import {
   Text,
   View,
@@ -20,6 +22,8 @@ import { useAuth } from '../authContext';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
+import { useUserPreferences } from '../context/userPreferencesContext'; // Import the hook
+
 WebBrowser.maybeCompleteAuthSession();
 
 const googleClientIds = Constants.expoConfig?.extra?.googleClientIds;
@@ -27,6 +31,9 @@ const googleClientIds = Constants.expoConfig?.extra?.googleClientIds;
 export default function LoginScreen() {
   const router = useRouter();
   const { setAccessToken, setGmailAccessToken, setFirebaseReady } = useAuth();
+  const { preferences, setPreferences } = useUserPreferences(); // Use the hook
+
+  console.log('Initial preferences:', preferences); // Log initial preferences
 
   const config = {
     webClientId: googleClientIds?.web,
@@ -61,11 +68,14 @@ export default function LoginScreen() {
 
               if (docSnap.exists()) {
                 console.log('Fetched user preferences:', docSnap.data());
+                setPreferences(docSnap.data()); // Set fetched preferences in context
               } else {
                 console.log('No user preferences found.');
+                setPreferences(null); // Explicitly set to null if no preferences found
               }
             } catch (err) {
               console.error('Error fetching user preferences:', err);
+              setPreferences(null); // Set to null on error
             }
 
             setAccessToken(accessToken);
@@ -75,10 +85,11 @@ export default function LoginScreen() {
           })
           .catch((error) => {
             alert('Firebase sign-in failed: ' + error.message);
+            setPreferences(null); // Set to null on sign-in failure
           });
       }
     }
-  }, [response]);
+  }, [response, setPreferences]); // Add setPreferences to the dependency array
 
   return (
     <View style={styles.container}>
