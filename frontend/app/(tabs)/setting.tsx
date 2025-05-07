@@ -28,30 +28,6 @@ export default function SettingScreen() {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Setting screen</Text>
-
-            {/* Display some user preferences */}
-            {preferences ? (
-                <View style={styles.preferencesContainer}>
-                    <Text style={styles.preferenceText}>
-                        Preferred Class: {preferences.preferredClass || 'Not set'}
-                    </Text>
-                    <Text style={styles.preferenceText}>
-                        Preferred Seat: {preferences.preferredSeat || 'Not set'}
-                    </Text>
-                    <Text style={styles.preferenceText}>
-                        AI Flight Recommendation:{' '}
-                        {preferences.aiFlightRecommendation ? 'Enabled' : 'Disabled'}
-                    </Text>
-                    {/* Add more preferences to display as needed */}
-                </View>
-            ) : (
-                <Text style={styles.loadingText}>Loading preferences...</Text>
-            )}
-
-            <Button title='Sign out' onPress={handleSignOut} />
-        </View>
       
         <ScrollView style={styles.container}>
             {/*User Setting Header */}
@@ -77,10 +53,7 @@ export default function SettingScreen() {
                     <Text style={styles.sectionTitle}>Personal Setting</Text>
                     <Text style={styles.sectionText}>Automatic Calendar Sync: {}</Text>
                     <Text style={styles.sectionText}>AI Generated Recommended Flights: {}</Text>
-                    <TouchableOpacity onPress={() => { router.push({
-                        pathname: '/(pages)/preference',
-                        params: { },
-                    })}}>
+                    <TouchableOpacity onPress={() => { router.push({ pathname: '/(pages)/preference' })}}>
                         <Text style={styles.sectionText} >Preference</Text>
                     </TouchableOpacity>
                     <Text style={styles.sectionTextLast}>Privacy Access Form: </Text>
