@@ -1,10 +1,11 @@
-// app/_layout.tsx
+// frontend/app/_layout.tsx
 import { Stack, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
-import { auth } from '../firebase'; // import your shared auth instance
-import { AuthProvider } from '../authContext';
+import { auth } from '../firebase'; // Corrected import path
+import { AuthProvider } from '../authContext'; // Corrected import path
 import { getFirestore } from 'firebase/firestore'; // Import Firestore
+import { UserPreferencesProvider } from '../context/userPreferencesContext'; // Import UserPreferencesProvider
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
@@ -39,9 +40,17 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-      </Stack>
+      <UserPreferencesProvider> {/* Wrap the Stack with UserPreferencesProvider */}
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+           {/* Add other screens here if they are part of this stack */}
+           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+           <Stack.Screen name="(pages)/alternativeFlights" options={{ headerShown: false }}/>
+           <Stack.Screen name="(pages)/booking" options={{ headerShown: false }}/>
+           <Stack.Screen name="(pages)/flightDetails" options={{ headerShown: false }}/>
+           <Stack.Screen name="+not-found" />
+        </Stack>
+      </UserPreferencesProvider> {/* Close UserPreferencesProvider */}
     </AuthProvider>
   );
 }
