@@ -7,12 +7,25 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+
 async function exportFirestoreData() {
-  const snapshot = await db.collection('users').get();
+  const usersSnapshot = await db.collection('users').get();
   const data = {};
-  snapshot.forEach((doc) => {
-    data[doc.id] = doc.data();
-  });
+
+  for (const userDoc of usersSnapshot.docs) {
+    const userId = userDoc.id;
+    const userData = userDoc.data();
+
+    // Get the specific 'trip123' document from the 'trips' subcollection
+    const trip123Doc = await userDoc.ref.collection('trips').doc('trip123').get();
+    const trip123Data = trip123Doc.exists ? trip123Doc.data() : null; // Get data if the document exists
+
+    // Include user data and trip123 data (if it exists)
+    data[userId] = {
+      ...userData,
+      trip123: trip123Data, // Add the trip123 data here (will be null if the document doesn't exist)
+    };
+  }
   console.log(JSON.stringify(data, null, 2));
 }
 
