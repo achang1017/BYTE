@@ -11,6 +11,7 @@ import { auth, db } from '../firebase';
 import {
   signInWithCredential,
   GoogleAuthProvider,
+  signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
@@ -80,6 +81,15 @@ export default function LoginScreen() {
     }
   }, [response]);
 
+  const signIn = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, "test@gmail.com", "test123");
+    } catch (e) {
+      const err = e as Error;
+    } finally {
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -87,7 +97,7 @@ export default function LoginScreen() {
         style={styles.logo}
       />
       <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
-        <Text style={styles.subTitle}>SAP Concur</Text>
+        <Text style={styles.subTitle} onPress={signIn}>SAP Concur</Text>
         <TouchableOpacity
           style={styles.signInwithGoogle}
           onPress={() => signInwithGoogle()}
