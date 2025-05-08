@@ -1,13 +1,15 @@
 import { Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { useAuth } from '../../authContext';
 
 import UpcomingFlight from '@/components/upcomingFlight';
 import { FlightInfo } from '@/dataType/flight';
 import { AlertType, Alert } from '@/dataType/alert';
 import Notification from '@/components/notification';
+
+import { collection, getDocs } from 'firebase/firestore';
 
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
@@ -20,30 +22,28 @@ export default function Home() {
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
+  // Fetch from Firestore directly
   useEffect(() => {
-    if (!gmailAccessToken) return;
-
-    async function fetchFlightData() {
+    const fetchFlightsFromFirestore = async () => {
+      if (!user?.email) return;
+  
       try {
-        const response = await fetch('http://localhost:3000/api/gmail/flights', {
-          headers: {
-            Authorization: `Bearer ${gmailAccessToken}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch flight data');
+        const tripsRef = collection(db, 'users', user.email, 'trips');
+        const snapshot = await getDocs(tripsRef);
+  
+        if (!snapshot.empty) {
+          const firstTrip = snapshot.docs[0].data();
+          setFlightInfo(firstTrip as FlightInfo);
+        } else {
+          console.log('No trips found for this user.');
         }
-
-        const data = await response.json();
-        setFlightInfo(data[0]);
       } catch (err) {
-        console.error('Error fetching flight info:', err);
+        console.error('Error fetching trip info from Firestore:', err);
       }
-    }
-
-    fetchFlightData();
-  }, [gmailAccessToken]);
+    };
+  
+    fetchFlightsFromFirestore();
+  }, [user]);
 
   useEffect(() => {
     if (!flightInfo) return;
