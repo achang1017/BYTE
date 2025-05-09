@@ -2,13 +2,12 @@ import { Text, View, ScrollView, Image, StyleSheet, Alert, TouchableOpacity, Tou
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useRouter } from 'expo-router';
+import { useState, useEffect } from 'react';
 import { useUserPreferences } from '../../context/userPreferencesContext'; // Import the hook
 
 export default function SettingScreen() {
     const router = useRouter();
     const { preferences } = useUserPreferences(); // Use the hook to access preferences
-
-    console.log('Preferences in Settings screen:', preferences); // Add this logging statement
 
     const userImage = '../../assets/images/user-icon.png';
     const user = auth.currentUser;
@@ -17,6 +16,22 @@ export default function SettingScreen() {
     const userPhoto = user?.photoURL || userImage;
     const userPhone = user?.phoneNumber || 'none';
     const userEmail = user?.email || "example@uw.edu";
+
+    const [autoCalendar, setAutoCalendar] = useState<String>("Off");
+    const [aiFlightRec, setAiFlightRec] = useState<String>("Off");
+    const [dataSync, setDataSync] = useState<String>("Off");
+
+    useEffect(() => {
+        if(preferences.preferences.autoCalendarUpdate) {
+            setAutoCalendar("On");
+        }
+        if(preferences.preferences.aiFlightRecommendation) {
+            setAiFlightRec("On");
+        }
+        if(preferences.preferences.personalDataSync) {
+            setDataSync("On");
+        }
+    })
 
     const handleSignOut = async () => {
         try {
@@ -51,10 +66,14 @@ export default function SettingScreen() {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Personal Setting</Text>
-                    <Text style={styles.sectionText}>Automatic Calendar Sync: {}</Text>
-                    <Text style={styles.sectionText}>AI Generated Recommended Flights: {}</Text>
+                    <Text style={styles.sectionText}>Automatic Calendar Sync: { autoCalendar }</Text>
+                    <Text style={styles.sectionText}>AI Generated Recommended Flights: { aiFlightRec }</Text>
+                    <Text style={styles.sectionText}>Personal Data Sync: { dataSync }</Text>
                     <TouchableOpacity onPress={() => { router.push({ pathname: '/(pages)/preference' })}}>
-                        <Text style={styles.sectionText} >Preference</Text>
+                        <View style={styles.sectionTouch}>
+                            <Text style={styles.sectionTouchText}>Preference</Text>
+                            <Image source={require('../../assets/images/arrow.png')} style={styles.arrow} />
+                        </View>
                     </TouchableOpacity>
                     <Text style={styles.sectionTextLast}>Privacy Access Form: </Text>
                 </View>
@@ -78,7 +97,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-
+        borderBottomWidth: 1,
         padding: 20, // Added padding for better spacing
     },
     text: {
@@ -86,25 +105,10 @@ const styles = StyleSheet.create({
         fontSize: 24, // Increased font size
         marginBottom: 20, // Added margin
     },
-    preferencesContainer: {
-        marginTop: 20,
-        padding: 15,
-        backgroundColor: '#35393e', // Slightly lighter background for the preferences box
-        borderRadius: 10,
-        width: '100%', // Take full width
-    },
     preferenceText: {
         color: '#fff',
         fontSize: 16,
         marginBottom: 10, // Margin between preference lines
-    },
-    loadingText: {
-        color: '#fff',
-        fontSize: 16,
-        marginTop: 20,
-        paddingVertical: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#000',
     },
     profile: {
         marginTop: 20,
@@ -116,6 +120,7 @@ const styles = StyleSheet.create({
         width: 77,
         height: 77,
         borderRadius: 50,
+        marginBottom: 10,
     },
     title: {
         fontSize: 21,
@@ -123,7 +128,7 @@ const styles = StyleSheet.create({
     },
     sections: {
         alignItems: 'center',
-        marginBottom: 25,
+        marginBottom: 15,
     },
     section: {
         width: 343,
@@ -149,6 +154,28 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         borderWidth: 1,
         borderColor: '#000',
+        marginTop: -1,
+    },
+    sectionTouch: {
+        display: 'flex',
+        flexDirection: 'row',
+        padding: 10,
+        paddingLeft: 15,
+        borderWidth: 1,
+        borderColor: '#000',
+        marginTop: -1,
+    },
+    sectionTouchText: {
+        flex: 5,
+        fontSize: 12,
+        color: '#000',
+        fontWeight: 'bold',
+    },
+    arrow: {
+        width: 6.5,
+        height: 10,
+        alignSelf: 'center',
+        marginRight: 5,
     },
     sectionTextLast: {
         fontSize: 12,
@@ -160,6 +187,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 15,
         borderWidth: 1,
         borderColor: '#000',
+        marginTop: -1,
     },
     button: {
         width: 343,
