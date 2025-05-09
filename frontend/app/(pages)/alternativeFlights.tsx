@@ -1,4 +1,3 @@
-import FlightTracker from '@/components/flightTracker';
 import { AltFlightInfo, FlightInfo } from '@/dataType/flight';
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
