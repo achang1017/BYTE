@@ -1,4 +1,3 @@
-import FlightTracker from '@/components/flightTracker';
 import { AltFlightInfo, FlightInfo } from '@/dataType/flight';
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -6,7 +5,8 @@ import AlternativeFlight from '@/components/alternativeFlight';
 import { useEffect, useState } from 'react';
 
 
-type FilterType = 'Recommended' | 'Duration' | 'Price';
+
+type FilterType = 'Recommended' | 'Duration' | 'Price' | 'Business Schedule' | 'Flight Class' | null;
 
 
 export default function AlternativeFlightScreen() {
@@ -14,6 +14,14 @@ export default function AlternativeFlightScreen() {
     const [alternativeFlights, setAlternativeFlights] = useState<AltFlightInfo[] | null>(null);
     const [filtered, setFiltered] = useState<FilterType | null>(null);
     const [selectedFlight, setSelectedFlight] = useState<AltFlightInfo | null>(null);
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        { label: 'Economy', value: 'Economy' },
+        { label: 'Business', value: 'Business' },
+        { label: 'First Class', value: 'First Class' },
+    ]);
+
 
     const router = useRouter();
 
@@ -91,6 +99,30 @@ export default function AlternativeFlightScreen() {
         }
     };
 
+    const setFlightClassFilter = () => {
+        if (alternativeFlights) {
+            const sortedFlights = [...alternativeFlights].sort((a, b) => {
+                if (a.seat == value && b.seat != value) return -1;
+                if (a.seat != value && b.seat == value) return 1;
+                return 0;
+            })
+            setAlternativeFlights(sortedFlights);
+            setFiltered('Flight Class');
+        }
+    }
+
+    const setBusinessScheduleFilter = () => {
+        if (alternativeFlights) {
+            const sortedFlights = [...alternativeFlights].sort((a, b) => {
+                const conflictsA = a.meetingConflicts;
+                const conflictsB = b.meetingConflicts;
+                return conflictsA - conflictsB;
+            })
+            setAlternativeFlights(sortedFlights);
+            setFiltered('Business Schedule');
+        }
+    };
+
     const setPriceFilter = () => {
         if (alternativeFlights) {
             const sortedFlights = [...alternativeFlights].sort((a, b) => {
@@ -108,17 +140,26 @@ export default function AlternativeFlightScreen() {
 
             <ScrollView style={styles.scrollArea}>
                 {/* Filter */}
-                <View style={styles.filterRow} >
-                    <TouchableOpacity style={[styles.filter, (filtered == 'Recommended' && { backgroundColor: '#012A86' })]} onPress={() => setRecommendedFilter()}>
-                        <Text style={[styles.filterText, filtered == 'Recommended' && { color: '#fff' }]}>Recommended</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.filter, (filtered == 'Duration' && { backgroundColor: '#012A86' })]} onPress={() => setDurationFilter()}>
-                        <Text style={[styles.filterText, filtered == 'Duration' && { color: '#fff' }]}>Duration</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.filter, (filtered == 'Price' && { backgroundColor: '#012A86' })]} onPress={() => setPriceFilter()}>
-                        <Text style={[styles.filterText, filtered == 'Price' && { color: '#fff' }]}>Price</Text>
-                    </TouchableOpacity>
-                </View>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+                    <View style={styles.filterRow} >
+                        <TouchableOpacity style={[styles.filter, (filtered == 'Recommended' && { backgroundColor: '#012A86' })]} onPress={() => setRecommendedFilter()}>
+                            <Text style={[styles.filterText, filtered == 'Recommended' && { color: '#fff' }]}>Recommended</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.filter, (filtered == 'Duration' && { backgroundColor: '#012A86' })]} onPress={() => setDurationFilter()}>
+                            <Text style={[styles.filterText, filtered == 'Duration' && { color: '#fff' }]}>Duration</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.filter, (filtered == 'Price' && { backgroundColor: '#012A86' })]} onPress={() => setPriceFilter()}>
+                            <Text style={[styles.filterText, filtered == 'Price' && { color: '#fff' }]}>Price</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.filter, (filtered == 'Business Schedule' && { backgroundColor: '#012A86' })]} onPress={() => setBusinessScheduleFilter()}>
+                            <Text style={[styles.filterText, filtered == 'Business Schedule' && { color: '#fff' }]}>Business Schedule</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.filter, (filtered == 'Flight Class' && { backgroundColor: '#012A86' })]} onPress={() => setFlightClassFilter()}>
+                            <Text style={[styles.filterText, filtered == 'Flight Class' && { color: '#fff' }]}>Flight class</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                </ScrollView>
                 {/* Alternative flight section */}
                 {alternativeFlights && alternativeFlights.map((flight, index) => (
                     <TouchableOpacity key={index} style={styles.section} onPress={() => setSelectedFlight(flight)}>
