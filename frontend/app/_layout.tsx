@@ -5,11 +5,18 @@ import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
 import { auth } from '../firebase'; // import your shared auth instance
 import { AuthProvider } from '../authContext';
 import { getFirestore } from 'firebase/firestore'; // Import Firestore
+import { setupNotificationHandler, registerBackgroundTask } from '../components/pushNotification';
+
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setupNotificationHandler();
+    registerBackgroundTask();
+  }, []);
 
   // Firebase and Firestore Initialization Test
   useEffect(() => {
