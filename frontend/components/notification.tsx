@@ -74,7 +74,7 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                         <Text style={styles.text}>Your flight {flightInfo.flightNumber} has been delayed by {delayTime}.
                         </Text>
                         <Text style={styles.text}>New Departure time: {flightInfo.newDepartureTime}</Text>
-                        <Text style={styles.text}>New arrival time: {flightInfo.newArrivalTime}</Text>
+                        <Text style={styles.text}>New arrival time: {flightInfo.newArrivalTime || flightInfo.arrivalTime}</Text>
                     </View>
                 </View>
 
@@ -86,7 +86,7 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.dismissButton} onPress={() => { onDismiss() }}>
-                    <Text style={styles.dismissText} >Keey current flight</Text>
+                    <Text style={styles.dismissText} >Key current flight</Text>
                 </TouchableOpacity>
             </View>
         );
