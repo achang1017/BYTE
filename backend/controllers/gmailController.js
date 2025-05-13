@@ -1,3 +1,6 @@
+// This controller is no longer used. All flight fetching is now done from Firestore.
+// You can safely remove this file and its route.
+
 const { getFlightEmails } = require('./gmailService');
 
 exports.getFlights = async (req, res) => {
