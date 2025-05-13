@@ -9,7 +9,7 @@ import { FlightInfo } from '@/dataType/flight';
 import { AlertType, Alert } from '@/dataType/alert';
 import Notification from '@/components/notification';
 
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
@@ -26,14 +26,34 @@ export default function Home() {
   useEffect(() => {
     const fetchFlightsFromFirestore = async () => {
       if (!user?.email) return;
-  
+
       try {
+        // Fetch user's trips
         const tripsRef = collection(db, 'users', user.email, 'trips');
-        const snapshot = await getDocs(tripsRef);
-  
-        if (!snapshot.empty) {
-          const firstTrip = snapshot.docs[0].data();
-          setFlightInfo(firstTrip as FlightInfo);
+        const tripsSnapshot = await getDocs(tripsRef);
+
+        if (!tripsSnapshot.empty) {
+          const tripData = tripsSnapshot.docs[0].data(); // Assuming the first trip for now
+          const flightNumbers: string[] = tripData.flights || [];
+
+          if (flightNumbers.length > 0) {
+            // Fetch flight details from Flights collection
+            const flightPromises = flightNumbers.map((flightNumber: string) => {
+              const flightRef = doc(db, 'flights', flightNumber);
+              return getDoc(flightRef);
+            });
+
+            const flightDocs = await Promise.all(flightPromises);
+            const flights = flightDocs.map((doc) => (doc.exists() ? doc.data() : null)).filter(Boolean);
+
+            if (flights.length > 0) {
+              setFlightInfo(flights[0] as FlightInfo); // Set the first flight as the current flight
+            } else {
+              console.log('No valid flights found for this user.');
+            }
+          } else {
+            console.log('No flights found in the trip.');
+          }
         } else {
           console.log('No trips found for this user.');
         }
@@ -41,7 +61,7 @@ export default function Home() {
         console.error('Error fetching trip info from Firestore:', err);
       }
     };
-  
+
     fetchFlightsFromFirestore();
   }, [user]);
 
