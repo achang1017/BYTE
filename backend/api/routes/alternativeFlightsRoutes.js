@@ -50,29 +50,36 @@ router.get('/', async (req, res) => {
             return res.status(400).json({ error: 'Missing flightInfo' });
         }
         const flightInfo = JSON.parse(rawFlightInfo);
-        //if (data not in db) { // need to edit
-            const openai = new OpenAI({
-                apiKey: process.env.OPENAI_API_KEY,
-            });
-    
-            const response = await openai.responses.create({
-                model: "gpt-4o",
-                tools: [{ type: "web_search_preview" }],
-                input:`Find 5 upcoming flights with prices and flight classes from ${flightInfo.departure} to ${flightInfo.arrival} that depart around ${flightInfo.departureTime}. Time should follow ISO format and duration should #h #m format.`,
-                text: {
-                    "format": {
-                        "type": "json_schema",
-                        "name": "alternativeFlights",
-                        "schema": ALT_FLIGHTS_SCHEMA,
-                        "strict": true
-                    }
-                },
-            });
-            const altFlights = JSON.parse(response.output_text);
-            console.log(altFlights.flights);
-            // put the response in db
-        //}
-        // return array of alt flights 
+
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+
+        const response = await openai.responses.create({
+            model: "gpt-4o",
+            tools: [{ type: "web_search_preview" }],
+            input: `Generate a list of at least 5 upcoming flights from ${flightInfo.departure} to ${flightInfo.arrival}. Include details such as airline, flight number, departure and arrival times (ISO format), duration (e.g., 2h 30m), price, seat class, and layover time. Ensure the data is accurate and formatted as JSON.`,
+            text: {
+                "format": {
+                    "type": "json_schema",
+                    "name": "alternativeFlights",
+                    "schema": ALT_FLIGHTS_SCHEMA,
+                    "strict": true
+                }
+            },
+        });
+
+        const altFlights = JSON.parse(response.output_text);
+
+        // Store the response in Firestore
+        const batch = db.batch();
+        altFlights.flights.forEach((flight) => {
+            const flightRef = db.collection('alternativeFlights').doc(flight.flightNumber);
+            batch.set(flightRef, flight);
+        });
+        await batch.commit();
+
+        res.status(200).json(altFlights.flights);
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({ error: 'Failed to fetch alternative flight lists' });

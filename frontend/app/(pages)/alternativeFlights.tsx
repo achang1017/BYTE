@@ -31,7 +31,6 @@ export default function AlternativeFlightScreen() {
     };
 
     useEffect(() => {
-        
         const fetchAlternativeFlights = async () => {
             try {
                 const encodedFlightInfo = encodeURIComponent(JSON.stringify(flightInfo));
@@ -40,50 +39,13 @@ export default function AlternativeFlightScreen() {
                     throw new Error('Failed to fetch alternative flights');
                 }
                 const altFlights = await response.json();
-                //setAlternativeFlights(altFlights);
+                setAlternativeFlights(altFlights);
             } catch (error) {
                 console.error('Error fetching alternative flights:', error);
             }
         };
-        
-        fetchAlternativeFlights();
-        
-        // we can delete this after connecting with backend
-        /*
-        setAlternativeFlights([
-            {
-                altID: 'A123',
-                tripID: 'T123',
-                flightNumber: 'FL123',
-                departureTime: '2023-10-01T10:00:00Z',
-                arrivalTime: '2023-10-01T12:00:00Z',
-                duration: '5h',
-                changeFee: 50,
-                isRecommended: true,
-                meetingConflicts: 1,
-                departure: 'NYC',
-                arrival: 'LAX',
-                seat: 'Economy',
-                layover: 0,
 
-            },
-            {
-                altID: 'B456',
-                tripID: 'T456',
-                flightNumber: 'FL456',
-                departureTime: '2023-10-01T11:00:00Z',
-                arrivalTime: '2023-10-01T13:00:00Z',
-                duration: '2h',
-                changeFee: 100,
-                isRecommended: false,
-                meetingConflicts: 2,
-                departure: 'NYC',
-                arrival: 'LAX',
-                seat: 'Business',
-                layover: 2,
-            },
-        ]);
-        */
+        fetchAlternativeFlights();
     }, []);
 
     const setRecommendedFilter = () => {
@@ -142,7 +104,7 @@ export default function AlternativeFlightScreen() {
                 {/* Alternative flight section */}
                 {alternativeFlights && alternativeFlights.map((flight, index) => (
                     <TouchableOpacity key={index} style={styles.section} onPress={() => setSelectedFlight(flight)}>
-                        <AlternativeFlight flightInfo={flight} isSelected={selectedFlight?.altID == flight.altID} />
+                        <AlternativeFlight flightInfo={flight} isSelected={selectedFlight?.flightNumber === flight.flightNumber} />
                     </TouchableOpacity>
                 ))}
 

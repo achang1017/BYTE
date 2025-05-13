@@ -1,4 +1,3 @@
-
 export type FlightInfo = {
     date: string;
     flightNumber: string;
@@ -12,8 +11,6 @@ export type FlightInfo = {
 };
 
 export type AltFlightInfo = {
-    altID: string;
-    tripID: string;
     flightNumber: string;
     departureTime: String;
     arrivalTime: String;
