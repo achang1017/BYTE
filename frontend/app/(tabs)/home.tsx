@@ -70,15 +70,14 @@ export default function Home() {
 
     async function checkFlightInterruption() {
       try {
-        console.log("checkFlightInterruption test");
-        console.log(flightInfo);
         const response = await fetch(`http://localhost:3000/api/flightInterruption?flightNumber=${flightInfo.flightNumber}&departure=${flightInfo.departure}&departureTime=${flightInfo.departureTime}`);
         
         if (!response.ok) throw new Error('Failed to fetch flight interruption');
     
         const flight = await response.json();
+        let newFlightInfo = flightInfo;
         if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
-          const updatedFlightInfo: FlightInfo = {
+          newFlightInfo = {
             ...flightInfo,
             status: flight.status,
             delay: flight.departure?.delay,
@@ -86,7 +85,7 @@ export default function Home() {
             newArrivalTime: flight.arrival?.estimatedTime,
           };
     
-          setFlightInfo(updatedFlightInfo);
+          setFlightInfo(newFlightInfo);
 
           await fetch('http://localhost:3000/api/updateFlight', {
             method: 'POST',
@@ -94,14 +93,17 @@ export default function Home() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              flightNumber: updatedFlightInfo.flightNumber,
-              flightInfo: updatedFlightInfo,
+              flightNumber: newFlightInfo.flightNumber,
+              flightInfo: newFlightInfo,
             }),
-          });
+          }); 
+        }
+
+        if (flight.departure?.delay > 0) {
           const newAlert: Alert = {
             id: Date.now(),
             type: AlertType.FlightInteruption,
-            flightInfo: updatedFlightInfo,
+            flightInfo: newFlightInfo,
           };
     
           setAlerts([newAlert]);
