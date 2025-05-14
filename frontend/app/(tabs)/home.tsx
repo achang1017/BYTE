@@ -66,25 +66,6 @@ export default function Home() {
   }, [user]);
 
   useEffect(() => {
-    if (!flightInfo) return;
-
-    const newAlerts: Alert[] = [
-      {
-        id: 1,
-        type: AlertType.FlightInteruption,
-        flightInfo,
-      },
-      {
-        id: 2,
-        type: AlertType.MeetingConflict,
-        flightInfo,
-      },
-    ];
-
-    setAlerts(newAlerts);
-  }, [flightInfo]);
-
-  useEffect(() => {
     if (!flightInfo || !flightInfo.flightNumber || !flightInfo.departure || ! flightInfo.departureTime) return;
 
     async function checkFlightInterruption() {
@@ -94,21 +75,35 @@ export default function Home() {
         if (!response.ok) throw new Error('Failed to fetch flight interruption');
     
         const flight = await response.json();
+        let newFlightInfo = flightInfo;
         if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
-          // update db
-          const updatedFlightInfo: FlightInfo = {
+          newFlightInfo = {
             ...flightInfo,
             status: flight.status,
             delay: flight.departure?.delay,
             newDepartureTime: flight.departure?.actualTime,
-            newArrivalTime: flight.arrival?.actualTime,
+            newArrivalTime: flight.arrival?.estimatedTime,
           };
     
-          setFlightInfo(updatedFlightInfo);
+          setFlightInfo(newFlightInfo);
+
+          await fetch('http://localhost:3000/api/updateFlight', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              flightNumber: newFlightInfo.flightNumber,
+              flightInfo: newFlightInfo,
+            }),
+          }); 
+        }
+
+        if (flight.departure?.delay > 0) {
           const newAlert: Alert = {
             id: Date.now(),
             type: AlertType.FlightInteruption,
-            flightInfo: updatedFlightInfo,
+            flightInfo: newFlightInfo,
           };
     
           setAlerts([newAlert]);
