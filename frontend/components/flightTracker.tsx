@@ -21,7 +21,7 @@ export default function FlightTracker({ flightInfo }: Props) {
 
 
     // Sample timeline data
-    // TODO need to think about how to get alert
+    // TODO need to think about how to get alert -- when status is delayed or cancelled in flightInfo add the reason and delayed time
     // Expected behavoir: using the flight info, get the alert from backend?
     const timelineData: TimelineItem[] = [
         {
@@ -55,6 +55,7 @@ export default function FlightTracker({ flightInfo }: Props) {
             title: 'Ready for Boarding',
             bullets: ['Boarding to begin soon'],
         },
+        // if it is not null.. change with ${flightInfo.delayReason}
     ];
 
     const newArriavaltime = new Date(flightInfo.arrivalTime);

@@ -84,6 +84,47 @@ export default function Home() {
     setAlerts(newAlerts);
   }, [flightInfo]);
 
+  useEffect(() => {
+    if (!flightInfo) return;
+
+    async function checkFlightInterruption() {
+      try {
+        const response = await fetch(`http://localhost:3000/api/flightInterruption?flightNumber=${flightInfo.flightNumber}&departure=${flightInfo.departure}&departureTime=${flightInfo.departureTime}`);
+        
+        if (!response.ok) throw new Error('Failed to fetch flight interruption');
+    
+        const flight = await response.json();
+        if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
+          // update db
+          const updatedFlightInfo: FlightInfo = {
+            ...flightInfo,
+            status: flight.status,
+            delay: flight.departure?.delay,
+            newDepartureTime: flight.departure?.actualTime,
+            newArrivalTime: flight.arrival?.actualTime,
+          };
+    
+          setFlightInfo(updatedFlightInfo);
+          const newAlert: Alert = {
+            id: Date.now(),
+            type: AlertType.FlightInteruption,
+            flightInfo: updatedFlightInfo,
+          };
+    
+          setAlerts([newAlert]);
+        }
+      } catch (err) {
+        console.error('Error checking flight interruption:', err);
+      }
+    }
+    const interval = setInterval(() => {
+      checkFlightInterruption();
+    }, 1 * 60 * 1000);
+    
+    checkFlightInterruption();
+    return () => clearInterval(interval);
+  }, [flightInfo]);
+
   const dismissAlert = (id: number) => {
     setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   };
