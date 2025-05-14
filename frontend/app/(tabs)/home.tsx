@@ -85,7 +85,7 @@ export default function Home() {
   }, [flightInfo]);
 
   useEffect(() => {
-    if (!flightInfo) return;
+    if (!flightInfo || !flightInfo.flightNumber || !flightInfo.departure || ! flightInfo.departureTime) return;
 
     async function checkFlightInterruption() {
       try {

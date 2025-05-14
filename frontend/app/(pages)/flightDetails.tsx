@@ -22,7 +22,6 @@ export default function FlightScreen() {
         newDepartureTime: params.newDepartureTime as string,
         newArrivalTime: params.newArrivalTime as string,
         delay: params.delay as string,
-        delayReason: params.delayReason as string,
     };
 
     return (

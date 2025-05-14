@@ -11,7 +11,6 @@ export type FlightInfo = {
     newDepartureTime: string;
     newArrivalTime: string;
     delay: string;
-    delayReason: string;
 };
 
 export type AltFlightInfo = {
