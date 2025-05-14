@@ -18,7 +18,7 @@ const getCollection = async (req, res) => {
   }
 };
 
-// Helper: fetch a subcollection for a given document
+
 const getSubcollection = async (req, res) => {
   try {
     const { collectionName, docId, subcollectionName } = req.params;

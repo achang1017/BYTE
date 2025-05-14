@@ -12,7 +12,6 @@ import {
   signInWithCredential,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { getDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { useAuth } from '../authContext';
@@ -48,26 +47,11 @@ export default function LoginScreen() {
       const accessToken = response.authentication.accessToken;
 
       if (idToken && accessToken) {
-        const credential = GoogleAuthProvider.credential(idToken, accessToken); // ✅ Updated here
+        const credential = GoogleAuthProvider.credential(idToken, accessToken);
 
         signInWithCredential(auth, credential)
           .then(async (userCredential) => {
             const user = userCredential.user;
-
-            // Fetch user preferences from Firestore
-            try {
-              const docRef = doc(db, 'users', user.email ?? '');
-              const docSnap = await getDoc(docRef);
-
-              if (docSnap.exists()) {
-                console.log('Fetched user preferences:', docSnap.data());
-              } else {
-                console.log('No user preferences found.');
-              }
-            } catch (err) {
-              console.error('Error fetching user preferences:', err);
-            }
-
             setAccessToken(accessToken);
             setGmailAccessToken(accessToken);
             setFirebaseReady(true);

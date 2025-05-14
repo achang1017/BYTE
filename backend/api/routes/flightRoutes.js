@@ -2,7 +2,6 @@ const express = require('express');
 const { db } = require('../../firebase/firebaseInit');
 const router = express.Router();
 
-// we don't use this now but can use later to get flight data from db
 router.get("/:flightNumber", async (req, res) => {
     try {
         const flightNumber = req.params.flightNumber;
@@ -29,7 +28,6 @@ router.get("/:flightNumber", async (req, res) => {
     }
 });
 
-// New route to fetch all flights sorted by departure time
 router.get('/', async (req, res) => {
     try {
         const snapshot = await db.collection('flights').orderBy('departureTime').get();
