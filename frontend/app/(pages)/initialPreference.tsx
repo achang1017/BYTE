@@ -1,4 +1,5 @@
 import { Image, Text, View, ScrollView, Switch, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -11,6 +12,7 @@ export default function InitialPreferenceScreen() {
     const user = auth.currentUser;
     const userEmail = user?.email || "";
     const preferenceRef = doc(db, 'users', userEmail);
+    const router = useRouter();
 
     const [isAutoCalendar, setIsAutoCalendar] = useState(false);
     const [isAiFlightRec, setIsAiFlightRec] = useState(false);
@@ -497,6 +499,10 @@ export default function InitialPreferenceScreen() {
                         />
                     </View>
                 </View>
+
+                <TouchableOpacity style={styles.buttonContinue} onPress={() => router.push('/(tabs)/home')}>
+                    <Text style={styles.buttonText}>Sign out</Text>
+                </TouchableOpacity>
             </View>
         </ScrollView>
     );
@@ -627,6 +633,19 @@ const styles = StyleSheet.create({
     tooltipPosition: {
         justifyContent: 'center',
         marginTop: 5,
-    }
+    },
+    buttonContinue: {
+        width: 343,
+        borderRadius: 15,
+        padding: 10,
+        alignSelf: 'center',
+        alignItems: 'center',
+        backgroundColor: '#012A86',
+    },
+    buttonText: {
+        fontSize: 12,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
 });
 
