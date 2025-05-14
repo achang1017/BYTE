@@ -2,29 +2,15 @@ const express = require('express');
 const { db } = require('../../firebase/firebaseInit');
 const router = express.Router();
 
-router.get('/:flightNumber', async (req, res) => {
-    try {
-        const { flightNumber } = req.params;
-        const flightRef = db.collection('flights').doc(flightNumber);
-        const docSnap = await flightRef.get();
-        if (!docSnap.exists) {
-            return res.status(404).json({ status: 'error', message: 'Flight not found' });
-        }
-        res.status(200).json({ id: docSnap.id, ...docSnap.data() });
-    } catch (error) {
-        res.status(500).json({ status: 'error', error: error.message });
-    }
-});
-
 router.post("/", async (req, res) => {
     try {
-      const { flightNumber, flightInfo } = req.body;
+      const { flightInfo } = req.body;
   
-      if (!flightNumber || !flightInfo) {
-        return res.status(400).json({ status: "error", message: "Flight number and info are required" });
+      if (!flightInfo) {
+        return res.status(400).json({ status: "error", message: "Flight info is required" });
       }
   
-      const flightRef = db.collection("flights").doc(flightNumber);
+      const flightRef = db.collection("flights").doc(flightInfo.flightNumber);
       await flightRef.set(flightInfo, { merge: true });
   
       res.status(200).json({ status: "success", message: "Flight info updated" });
