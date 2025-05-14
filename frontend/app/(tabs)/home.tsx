@@ -66,45 +66,38 @@ export default function Home() {
   }, [user]);
 
   useEffect(() => {
-    if (!flightInfo) return;
-
-    const newAlerts: Alert[] = [
-      {
-        id: 1,
-        type: AlertType.FlightInteruption,
-        flightInfo,
-      },
-      {
-        id: 2,
-        type: AlertType.MeetingConflict,
-        flightInfo,
-      },
-    ];
-
-    setAlerts(newAlerts);
-  }, [flightInfo]);
-
-  useEffect(() => {
     if (!flightInfo || !flightInfo.flightNumber || !flightInfo.departure || ! flightInfo.departureTime) return;
 
     async function checkFlightInterruption() {
       try {
+        console.log("checkFlightInterruption test");
+        console.log(flightInfo);
         const response = await fetch(`http://localhost:3000/api/flightInterruption?flightNumber=${flightInfo.flightNumber}&departure=${flightInfo.departure}&departureTime=${flightInfo.departureTime}`);
         
         if (!response.ok) throw new Error('Failed to fetch flight interruption');
     
         const flight = await response.json();
         if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
-          // update db
           const updatedFlightInfo: FlightInfo = {
             ...flightInfo,
             status: flight.status,
             delay: flight.departure?.delay,
             newDepartureTime: flight.departure?.actualTime,
-            newArrivalTime: flight.arrival?.actualTime,
+            newArrivalTime: flight.arrival?.estimatedTime,
           };
     
           setFlightInfo(updatedFlightInfo);
+
+          await fetch('http://localhost:3000/api/updateFlight', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              flightNumber: updatedFlightInfo.flightNumber,
+              flightInfo: updatedFlightInfo,
+            }),
+          });
           const newAlert: Alert = {
             id: Date.now(),
             type: AlertType.FlightInteruption,
