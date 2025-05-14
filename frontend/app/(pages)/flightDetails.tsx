@@ -19,6 +19,9 @@ export default function FlightScreen() {
         gate: params.gate as string,
         status: params.status as string,
         duration: params.duration as string,
+        newDepartureTime: params.newDepartureTime as string,
+        newArrivalTime: params.newArrivalTime as string,
+        delay: params.delay as string,
     };
 
     return (

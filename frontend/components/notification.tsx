@@ -18,6 +18,21 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
 
     if (!flightInfo) return null;
 
+    const delayMinutes = Number(flightInfo.delay);
+    const hours = Math.floor(delayMinutes / 60);
+    const minutes = delayMinutes % 60;
+
+    let delayTime = '';
+
+    if (hours > 0) {
+        delayTime = `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+        if (minutes > 0) {
+            delayTime += ` ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+        }
+    } else {
+        delayTime = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+    }
+
     useEffect(() => {
         const checkConflicts = async () => {
 
@@ -56,9 +71,10 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                 {/* Flight Details */}
                 <View style={styles.detailsRow}>
                     <View>
-                        <Text style={styles.text}>Your flight {flightInfo.flightNumber} has been delayed by 444 hours.
+                        <Text style={styles.text}>Your flight {flightInfo.flightNumber} has been delayed by {delayTime}.
                         </Text>
-                        <Text style={styles.text}>New arrival time: {flightInfo.arrivalTime}</Text>
+                        <Text style={styles.text}>New Departure time: {flightInfo.newDepartureTime}</Text>
+                        <Text style={styles.text}>New arrival time: {flightInfo.newArrivalTime || flightInfo.arrivalTime}</Text>
                     </View>
                 </View>
 
@@ -70,7 +86,7 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.dismissButton} onPress={() => { onDismiss() }}>
-                    <Text style={styles.dismissText} >Keey current flight</Text>
+                    <Text style={styles.dismissText} >Key current flight</Text>
                 </TouchableOpacity>
             </View>
         );

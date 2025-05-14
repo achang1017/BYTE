@@ -1,22 +1,14 @@
-// app/_layout.tsx
 import { Stack, useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, getAuth, User } from 'firebase/auth';
-import { auth } from '../firebase'; // import your shared auth instance
+import { auth } from '../firebase';
 import { AuthProvider } from '../authContext';
-import { getFirestore } from 'firebase/firestore'; // Import Firestore
+import { getFirestore } from 'firebase/firestore';
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-
-  // Firebase and Firestore Initialization Test
-  useEffect(() => {
-    console.log('Firebase Auth Initialized:', auth); // Log Firebase Auth instance
-    const db = getFirestore(); // Initialize Firestore
-    console.log('Firestore Initialized:', db); // Log Firestore instance
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
