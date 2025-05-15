@@ -120,19 +120,19 @@ function FlightInfoBox({ departure, arrival, departureTime, arrivalTime, flightN
             />
             <View style={styles.flightInfoRow}>
                 <Text style={styles.flightText}>Date</Text>
-                <Text style={styles.flightText}>{new Date(departureTime.toString()).toLocaleDateString()}</Text>
+                <Text style={styles.flightText}>{departureTime ? new Date(departureTime.toString()).toLocaleDateString() : ""}</Text>
             </View>
             <View style={styles.flightInfoRow}>
                 <Text style={styles.flightText}>Flight</Text>
-                <Text style={styles.flightText}>{flightNumber}</Text>
+                <Text style={styles.flightText}>{flightNumber ? flightNumber : ""}</Text>
             </View>
             <View style={styles.flightInfoRow}>
                 <Text style={styles.flightText}>Departure</Text>
-                <Text style={styles.flightText}>{new Date(departureTime.toString()).toLocaleTimeString()}</Text>
+                <Text style={styles.flightText}>{departureTime ? new Date(departureTime.toString()).toLocaleTimeString() : ""}</Text>
             </View>
             <View style={styles.flightInfoRow}>
                 <Text style={styles.flightText}>Arrival</Text>
-                <Text style={styles.flightText}>{new Date(arrivalTime.toString()).toLocaleTimeString()}</Text>
+                <Text style={styles.flightText}>{arrivalTime ? new Date(arrivalTime.toString()).toLocaleTimeString() : ""}</Text>
             </View>
         </View>
     );

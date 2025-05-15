@@ -13,13 +13,15 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { getDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { useAuth } from '../authContext';
 
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
+
+import { useUserPreferences } from '../context/userPreferencesContext'; // Import the hook
+import { doc, getDoc } from 'firebase/firestore';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -28,6 +30,7 @@ const googleClientIds = Constants.expoConfig?.extra?.googleClientIds;
 export default function LoginScreen() {
   const router = useRouter();
   const { setAccessToken, setGmailAccessToken, setFirebaseReady } = useAuth();
+  const { preferences, setPreferences } = useUserPreferences(); // Use the hook
 
   const config = {
     webClientId: googleClientIds?.web,
@@ -49,37 +52,31 @@ export default function LoginScreen() {
       const accessToken = response.authentication.accessToken;
 
       if (idToken && accessToken) {
-        const credential = GoogleAuthProvider.credential(idToken, accessToken); // ✅ Updated here
+        const credential = GoogleAuthProvider.credential(idToken, accessToken);
 
         signInWithCredential(auth, credential)
-          .then(async (userCredential) => {
-            const user = userCredential.user;
-
-            // Fetch user preferences from Firestore
-            try {
-              const docRef = doc(db, 'users', user.email ?? '');
-              const docSnap = await getDoc(docRef);
-
-              if (docSnap.exists()) {
-                console.log('Fetched user preferences:', docSnap.data());
-              } else {
-                console.log('No user preferences found.');
-              }
-            } catch (err) {
-              console.error('Error fetching user preferences:', err);
-            }
-
+          .then(() => {
             setAccessToken(accessToken);
             setGmailAccessToken(accessToken);
             setFirebaseReady(true);
-            router.replace('/(tabs)/home');
           })
           .catch((error) => {
             alert('Firebase sign-in failed: ' + error.message);
+            setPreferences(null); // Set to null on sign-in failure
           });
       }
     }
   }, [response]);
+
+  useEffect(() => {
+    if (!auth.currentUser) return;
+
+    if (!preferences || preferences === null || Object.keys(preferences).length === 0) {
+      router.replace('/(pages)/initialPreference');
+    } else if (preferences) {
+      router.replace('/(tabs)/home');
+    }
+  }, [preferences]);
 
   const signIn = async () => {
     try {

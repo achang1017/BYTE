@@ -1,2 +1,6 @@
 */.env
 */node_modules/
+backend/firebase/*.json
+backend/firebase/*.json
+backend/exportFirestoreData.js
+backend/updateFlights.js
