@@ -48,6 +48,7 @@ export const UserPreferencesProvider: React.FC<UserPreferencesProviderProps> = (
         }
       },
       (error) => {
+        setPreferences(null);
       }
     );
 

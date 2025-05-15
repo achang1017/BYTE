@@ -1,5 +1,3 @@
-// frontend/app/index.tsx
-
 import {
   Text,
   View,
@@ -15,7 +13,6 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { getDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'expo-router';
 import Constants from 'expo-constants';
 import { useAuth } from '../authContext';
@@ -24,6 +21,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 import { useUserPreferences } from '../context/userPreferencesContext'; // Import the hook
+import { doc, getDoc } from 'firebase/firestore';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -54,35 +52,13 @@ export default function LoginScreen() {
       const accessToken = response.authentication.accessToken;
 
       if (idToken && accessToken) {
-        const credential = GoogleAuthProvider.credential(idToken, accessToken); // ✅ Updated here
+        const credential = GoogleAuthProvider.credential(idToken, accessToken);
 
         signInWithCredential(auth, credential)
-          .then(async (userCredential) => {
-            const user = userCredential.user;
-
-            // Fetch user preferences from Firestore
-            try {
-              const docRef = doc(db, 'users', user.email ?? '');
-              const docSnap = await getDoc(docRef);
-
-              if (docSnap.exists()) {
-                setPreferences(docSnap.data()); // Set fetched preferences in context
-              } else {
-                setPreferences(null); // Explicitly set to null if no preferences found
-              }
-            } catch (err) {
-              setPreferences(null); // Set to null on error
-            }
-
+          .then(() => {
             setAccessToken(accessToken);
             setGmailAccessToken(accessToken);
             setFirebaseReady(true);
-
-            if (!preferences) {
-              router.replace('/(pages)/initialPreference');
-            } else {
-              router.replace('/(tabs)/home');
-            }
           })
           .catch((error) => {
             alert('Firebase sign-in failed: ' + error.message);
@@ -90,7 +66,17 @@ export default function LoginScreen() {
           });
       }
     }
-  }, [response, setPreferences]); // Add setPreferences to the dependency array
+  }, [response]);
+
+  useEffect(() => {
+    if (!auth.currentUser) return;
+
+    if (!preferences || preferences === null || Object.keys(preferences).length === 0) {
+      router.replace('/(pages)/initialPreference');
+    } else if (preferences) {
+      router.replace('/(tabs)/home');
+    }
+  }, [preferences]);
 
   const signIn = async () => {
     try {
