@@ -19,6 +19,22 @@ export default function FlightTracker({ flightInfo }: Props) {
 
     const [sectionHeights, setSectionHeights] = useState<number[]>([]);
 
+    let delayTime = '';
+
+    if (flightInfo.delay && parseInt(flightInfo.delay) > 0) {
+        const delayMinutes = Number(flightInfo.delay);
+        const hours = Math.floor(delayMinutes / 60);
+        const minutes = delayMinutes % 60;
+        if (hours > 0) {
+            delayTime = `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+            if (minutes > 0) {
+                delayTime += ` ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+            }
+        } else {
+            delayTime = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+        }
+    }
+
 
     // Sample timeline data
     // TODO need to think about how to get alert -- when status is delayed or cancelled in flightInfo add the reason and delayed time
@@ -37,26 +53,24 @@ export default function FlightTracker({ flightInfo }: Props) {
                 `Duration: ${flightInfo.duration}`,
             ],
         },
-        {
-            icon: 'warning',
-            title: 'Flight Maintenance',
-            bullets: [
-                'Maintenance delayed by 1 hour (weather)',
-            ],
-        }, {
-            icon: 'warning',
-            title: 'Flight Maintenance',
-            bullets: [
-                'Maintenance delayed by 5 hours (technical)',
-            ],
-        },
+        ...(delayTime.length > 0
+            ? [{
+                icon: 'warning' as const,
+                title: 'Flight Delayed',
+                bullets: [
+                    `Flight has been delayed by ${delayTime}`,
+                    `New Departure Time: ${flightInfo.newDepartureTime ?? 'TBD'}`,
+                    `New Arrival Time: ${flightInfo.newArrivalTime ?? 'TBD'}`, 
+                ],
+            }]
+            : []),
         {
             icon: 'info',
             title: 'Ready for Boarding',
             bullets: ['Boarding to begin soon'],
         },
-        // if it is not null.. change with ${flightInfo.delayReason}
     ];
+    
 
     const newArriavaltime = new Date(flightInfo.arrivalTime);
     const newDeparturetime = new Date(flightInfo.departureTime);

@@ -22,6 +22,30 @@ export default function Home() {
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
 
+  function convertUTCWithReferenceOffset(utcString: string, referenceWithOffset: string): string {
+    const offsetMatch = referenceWithOffset.match(/([+-])(\d{2}):(\d{2})$/);
+    if (!offsetMatch) throw new Error('Invalid reference offset format');
+  
+    const sign = offsetMatch[1]; // "+" or "-"
+    const hours = parseInt(offsetMatch[2], 10);
+    const minutes = parseInt(offsetMatch[3], 10);
+    const totalOffsetMs = (hours * 60 + minutes) * 60 * 1000;
+    const offsetMs = sign === '+' ? totalOffsetMs : -totalOffsetMs;
+  
+    const utcDate = new Date(utcString);
+    const localDate = new Date(utcDate.getTime() + offsetMs);
+  
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const year = localDate.getFullYear();
+    const month = pad(localDate.getMonth() + 1);
+    const day = pad(localDate.getDate());
+    const hour = pad(localDate.getHours());
+    const minute = pad(localDate.getMinutes());
+    const second = pad(localDate.getSeconds());
+  
+    return `${year}-${month}-${day}T${hour}:${minute}:${second}${sign}${pad(hours)}:${pad(minutes)}`;
+  }
+  
   // Fetch from Firestore directly
   useEffect(() => {
     const fetchFlightsFromFirestore = async () => {
@@ -77,15 +101,19 @@ export default function Home() {
 
         const flight = await response.json();
         let newFlightInfo = flightInfo;
-        if (flightInfo && flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
+        if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
+          
           newFlightInfo = {
             ...flightInfo,
             status: flight.status,
             delay: flight.departure?.delay,
-            newDepartureTime: flight.departure?.actualTime,
-            newArrivalTime: flight.arrival?.estimatedTime,
+            newDepartureTime: flight.departure?.estimatedTime
+              ? convertUTCWithReferenceOffset(flight.departure.estimatedTime, flightInfo.departureTime)
+              : flight.departure?.estimatedTime,
+            newArrivalTime: flight.arrival?.estimatedTime
+              ? convertUTCWithReferenceOffset(flight.arrival.estimatedTime, flightInfo.departureTime)
+              : flight.arrival?.estimatedTime,
           };
-
           setFlightInfo(newFlightInfo);
 
           await fetch('http://localhost:3000/api/updateFlight', {
