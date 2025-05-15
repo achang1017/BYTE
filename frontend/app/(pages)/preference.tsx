@@ -46,72 +46,56 @@ export default function PreferenceScreen() {
         setIsAutoCalendar(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.autoCalendarUpdate': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const toggleAiFlightRec = async (value: boolean) => {
         setIsAiFlightRec(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.aiFlightRecommendation': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const toggleDataSync = async (value: boolean) => {
         setIsDataSync(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.personalDataSync': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const checkPrice = async (value: boolean) => {
         setIsPrice(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.isWithinBudget': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const checkDuration = async (value: boolean) => {
         setIsDuration(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.isDurationPriority': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const checkBusiness = async (value: boolean) => {
         setIsBusinessSchedule(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.isBusinessPriority': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const checkFlightClass = async (value: boolean) => {
         setIsFlightClass(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.isClassPriority': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const checkSeat = async (value: boolean) => {
         setIsSeat(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.isSeatPriority': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     };
     const toggleIsLayover = async () => {
@@ -119,9 +103,7 @@ export default function PreferenceScreen() {
         setIsLayover(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.isLayover': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
     const toggleIsStopover = async () => {
@@ -129,9 +111,7 @@ export default function PreferenceScreen() {
         setIsStopover(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.isStopover': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
     const toggleEconomy = async () => {
@@ -147,10 +127,8 @@ export default function PreferenceScreen() {
             } else {
                 await updateDoc(preferenceRef, { 'preferences.preferredClass': '' });
             }
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
-        }      
+        }
     }
     const toggleBusiness = async () => {
         const value: String = 'Business';
@@ -158,7 +136,7 @@ export default function PreferenceScreen() {
         if (isEconomy || isFirst) {
             setIsEconomy(false);
             setIsFirst(false);
-        } 
+        }
         try {
             if (!isBusiness) {
                 await updateDoc(preferenceRef, { 'preferences.preferredClass': value });
@@ -199,7 +177,6 @@ export default function PreferenceScreen() {
                 await updateDoc(preferenceRef, { 'preferences.preferredSeat': '' });
             }
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
     const toggleWindow = async () => {
@@ -215,43 +192,34 @@ export default function PreferenceScreen() {
                 await updateDoc(preferenceRef, { 'preferences.preferredSeat': '' });
             }
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
     const checkLegalName = async (value: Boolean) => {
         setHasLegalName(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.hasLegalName': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
     const checkBirthDate = async (value: Boolean) => {
         setHasBirthDate(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.hasBirthDate': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
     const checkBusinessID = async (value: Boolean) => {
         setHasBusinessID(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.hasBusinessID': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
     const checkPassportID = async (value: Boolean) => {
         setHasPassportID(value);
         try {
             await updateDoc(preferenceRef, { 'preferences.hasPassportID': value });
-            console.log("Updated Successfully");
         } catch (e) {
-            console.error("Error updating:", e);
         }
     }
 
@@ -273,7 +241,7 @@ export default function PreferenceScreen() {
                         </View>
                         <Switch
                             style={styles.toggle}
-                            trackColor={{false: '#fff', true: '#1F5FC1'}}
+                            trackColor={{ false: '#fff', true: '#1F5FC1' }}
                             onValueChange={toggleAutoCalendar}
                             value={isAutoCalendar}
                         />
@@ -285,7 +253,7 @@ export default function PreferenceScreen() {
                         </View>
                         <Switch
                             style={styles.toggle}
-                            trackColor={{false: '#fff', true: '#1F5FC1'}}
+                            trackColor={{ false: '#fff', true: '#1F5FC1' }}
                             onValueChange={toggleAiFlightRec}
                             value={isAiFlightRec}
                         />
@@ -297,10 +265,10 @@ export default function PreferenceScreen() {
                         </View>
                         <Switch
                             style={styles.toggle}
-                            trackColor={{false: '#fff', true: '#1F5FC1'}}
+                            trackColor={{ false: '#fff', true: '#1F5FC1' }}
                             onValueChange={toggleDataSync}
                             value={isDataSync}
-                        />  
+                        />
                     </View>
                 </View>
 
@@ -314,9 +282,9 @@ export default function PreferenceScreen() {
                                 isVisible={showTipPrice}
                                 content={<Text>Within budget, no extra cost</Text>}
                                 placement='right'
-                                onClose={()=> setTipPrice(false)}
+                                onClose={() => setTipPrice(false)}
                             >
-                                <TouchableOpacity onPress={()=> setTipPrice(true)}>
+                                <TouchableOpacity onPress={() => setTipPrice(true)}>
                                     <Image
                                         style={styles.tooltip}
                                         source={require('../../assets/images/tooltip.png')}
@@ -324,7 +292,7 @@ export default function PreferenceScreen() {
                                 </TouchableOpacity>
                             </Tooltip>
                         </View>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={isPrice}
                             onValueChange={checkPrice}
@@ -338,9 +306,9 @@ export default function PreferenceScreen() {
                                 isVisible={showTipDuration}
                                 content={<Text>Total flight hours, # flight transfers, including waiting time</Text>}
                                 placement='right'
-                                onClose={()=> setTipDuration(false)}
+                                onClose={() => setTipDuration(false)}
                             >
-                                <TouchableOpacity onPress={()=> setTipDuration(true)}>
+                                <TouchableOpacity onPress={() => setTipDuration(true)}>
                                     <Image
                                         style={styles.tooltip}
                                         source={require('../../assets/images/tooltip.png')}
@@ -348,7 +316,7 @@ export default function PreferenceScreen() {
                                 </TouchableOpacity>
                             </Tooltip>
                         </View>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={isDuration}
                             onValueChange={checkDuration}
@@ -378,9 +346,9 @@ export default function PreferenceScreen() {
                                 isVisible={showTipBusinessSchedule}
                                 content={<Text>Prioritize minimum meeting conflicts</Text>}
                                 placement='right'
-                                onClose={()=> setTipBusinessSchedule(false)}
+                                onClose={() => setTipBusinessSchedule(false)}
                             >
-                                <TouchableOpacity onPress={()=> setTipBusinessSchedule(true)}>
+                                <TouchableOpacity onPress={() => setTipBusinessSchedule(true)}>
                                     <Image
                                         style={styles.tooltip}
                                         source={require('../../assets/images/tooltip.png')}
@@ -388,7 +356,7 @@ export default function PreferenceScreen() {
                                 </TouchableOpacity>
                             </Tooltip>
                         </View>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={isBusinessSchedule}
                             onValueChange={checkBusiness}
@@ -397,7 +365,7 @@ export default function PreferenceScreen() {
                     </View>
                     <View style={styles.sectionContent}>
                         <Text style={styles.sectionSubtitle}>Flight Class</Text>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={isFlightClass}
                             onValueChange={checkFlightClass}
@@ -410,7 +378,7 @@ export default function PreferenceScreen() {
                                 style={[styles.button, isEconomy ? styles.buttonClicked : styles.buttonUnclicked]}
                                 onPress={toggleEconomy}
                             >
-                                <Text style={isEconomy? styles.textClicked : styles.textUnclicked}>Economy</Text>
+                                <Text style={isEconomy ? styles.textClicked : styles.textUnclicked}>Economy</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.button, isBusiness ? styles.buttonClicked : styles.buttonUnclicked]}
@@ -426,9 +394,9 @@ export default function PreferenceScreen() {
                             </TouchableOpacity>
                         </View>
                     )}
-                    <View style={isSeat? styles.sectionContent : [styles.sectionContent, styles.sectionContentLast]}>
+                    <View style={isSeat ? styles.sectionContent : [styles.sectionContent, styles.sectionContentLast]}>
                         <Text style={styles.sectionSubtitle}>Seat</Text>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={isSeat}
                             onValueChange={checkSeat}
@@ -458,7 +426,7 @@ export default function PreferenceScreen() {
                     <Text style={styles.sectionTitle}>Personal Data</Text>
                     <View style={styles.sectionContent}>
                         <Text style={styles.sectionSubtitle}>Legal Name</Text>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={hasLegalName}
                             onValueChange={checkLegalName}
@@ -467,7 +435,7 @@ export default function PreferenceScreen() {
                     </View>
                     <View style={styles.sectionContent}>
                         <Text style={styles.sectionSubtitle}>Date of Birth</Text>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={hasBirthDate}
                             onValueChange={checkBirthDate}
@@ -476,7 +444,7 @@ export default function PreferenceScreen() {
                     </View>
                     <View style={styles.sectionContent}>
                         <Text style={styles.sectionSubtitle}>Business ID</Text>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={hasBusinessID}
                             onValueChange={checkBusinessID}
@@ -485,7 +453,7 @@ export default function PreferenceScreen() {
                     </View>
                     <View style={styles.sectionContent}>
                         <Text style={styles.sectionSubtitle}>Passport ID</Text>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             value={hasPassportID}
                             onValueChange={checkPassportID}
@@ -494,7 +462,7 @@ export default function PreferenceScreen() {
                     </View>
                     <View style={[styles.sectionContent, styles.sectionContentLast]}>
                         <Text style={styles.sectionSubtitle}>Flight Schedule</Text>
-                        <Checkbox 
+                        <Checkbox
                             style={styles.checkbox}
                             disabled
                             value={true}
@@ -587,7 +555,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginLeft: 10,
         marginRight: 10,
-        transform: [{scaleX: 0.8}, {scaleY: 0.8}],
+        transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }],
     },
     checkbox: {
         position: 'absolute',
@@ -626,7 +594,7 @@ const styles = StyleSheet.create({
         fontSize: 11,
         color: '#000',
     },
-    tooltip: {    
+    tooltip: {
         width: 15,
         height: 15,
     },

@@ -26,11 +26,11 @@ export default function Home() {
   useEffect(() => {
     const fetchFlightsFromFirestore = async () => {
       if (!user?.email) return;
-  
+
       try {
         const tripsRef = collection(db, 'users', user.email, 'trips');
         const snapshot = await getDocs(tripsRef);
-  
+
         if (!snapshot.empty) {
           const firstTrip = snapshot.docs[0].data();
           setFlightInfo(firstTrip as FlightInfo);
@@ -41,7 +41,7 @@ export default function Home() {
         console.error('Error fetching trip info from Firestore:', err);
       }
     };
-  
+
     fetchFlightsFromFirestore();
   }, [user]);
 

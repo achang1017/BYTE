@@ -34,8 +34,6 @@ export default function LoginScreen() {
   const { setAccessToken, setGmailAccessToken, setFirebaseReady } = useAuth();
   const { preferences, setPreferences } = useUserPreferences(); // Use the hook
 
-  console.log('Initial preferences:', preferences); // Log initial preferences
-
   const config = {
     webClientId: googleClientIds?.web,
     iosClientId: googleClientIds?.ios,
@@ -68,21 +66,23 @@ export default function LoginScreen() {
               const docSnap = await getDoc(docRef);
 
               if (docSnap.exists()) {
-                console.log('Fetched user preferences:', docSnap.data());
                 setPreferences(docSnap.data()); // Set fetched preferences in context
               } else {
-                console.log('No user preferences found.');
                 setPreferences(null); // Explicitly set to null if no preferences found
               }
             } catch (err) {
-              console.error('Error fetching user preferences:', err);
               setPreferences(null); // Set to null on error
             }
 
             setAccessToken(accessToken);
             setGmailAccessToken(accessToken);
             setFirebaseReady(true);
-            router.replace('/(tabs)/home');
+
+            if (!preferences) {
+              router.replace('/(pages)/initialPreference');
+            } else {
+              router.replace('/(tabs)/home');
+            }
           })
           .catch((error) => {
             alert('Firebase sign-in failed: ' + error.message);
