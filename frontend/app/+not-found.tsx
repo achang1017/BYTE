@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Link, Stack } from 'expo-router';
 
 export default function NotFoundScreen() {
@@ -7,7 +7,7 @@ export default function NotFoundScreen() {
       <Stack.Screen options={{ title: 'Oops! Not Found' }} />
       <View style={styles.container}>
         <Link href="/" style={styles.button}>
-          Wrong approach. Please go back to main screen
+          <Text>Wrong approach. Please go back to main screen</Text>
         </Link>
       </View>
     </>

@@ -22,17 +22,16 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <UserPreferencesProvider> {/* Wrap the Stack with UserPreferencesProvider */}
+      <UserPreferencesProvider> 
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          {/* Add other screens here if they are part of this stack */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(pages)/alternativeFlights" options={{ headerShown: false }} />
           <Stack.Screen name="(pages)/booking" options={{ headerShown: false }} />
           <Stack.Screen name="(pages)/flightDetails" />
           <Stack.Screen name="+not-found" />
         </Stack>
-      </UserPreferencesProvider> {/* Close UserPreferencesProvider */}
+      </UserPreferencesProvider>
     </AuthProvider>
   );
 }

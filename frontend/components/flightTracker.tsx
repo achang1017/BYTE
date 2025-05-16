@@ -64,12 +64,10 @@ export default function FlightTracker({ flightInfo }: Props) {
 
     return (
         <View style={styles.container}>
-            {/* Header Row */}
             <View style={styles.headerRow}>
                 <Text style={styles.sectionTitle}>Flight: {flightInfo.flightNumber}</Text>
             </View>
 
-            {/* Flight Route Info */}
             <View style={styles.flightRow}>
                 <View style={styles.locationBox}>
                     <Text style={styles.code}>{flightInfo.departure}</Text>
@@ -90,14 +88,12 @@ export default function FlightTracker({ flightInfo }: Props) {
                     <Text style={styles.text}>{newArriavaltime.toTimeString()}</Text>                </View>
             </View>
 
-            {/* Flight Details */}
             <View style={styles.timelineRow}>
-                {/* Timeline Side */}
                 <View style={styles.timeline}>
                     {timelineData.map((_, index) => (
                         <View key={index} style={styles.timelineItem}>
                             <View style={index < timelineData.length - 2 ? styles.prevDot : (index == timelineData.length - 1 ? styles.finalDot : styles.currDot)} />
-                            {index < timelineData.length - 1 && (
+                            {index < timelineData.length - 1 ? (
                                 <View
                                     style={{
                                         width: 2,
@@ -105,12 +101,11 @@ export default function FlightTracker({ flightInfo }: Props) {
                                         height: sectionHeights[index] ?? 40, // fallback if not yet measured
                                     }}
                                 />
-                            )}
+                            ) : null}
                         </View>
                     ))}
                 </View>
 
-                {/* Content Side */}
                 <View style={styles.content}>
                     {timelineData.map((item, index) => (
                         <View
@@ -126,8 +121,9 @@ export default function FlightTracker({ flightInfo }: Props) {
                             style={styles.section}
                         >
                             <Text style={styles.sectionTitle}>
-                                {item.icon === 'check' ? '✓' : item.icon === 'warning' ? '⚠' : ''} {item.title}
+                                {(item.icon === 'check' ? '✓' : item.icon === 'warning' ? '⚠' : '') + ' ' + String(item.title)}
                             </Text>
+
                             {item.bullets.map((bullet, i) => (
                                 <Text key={i} style={styles.bullet}>• {bullet}</Text>
                             ))}

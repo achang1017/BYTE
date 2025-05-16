@@ -59,7 +59,6 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
     if (alertType === AlertType.FlightInteruption) {
         return (
             <View style={styles.container}>
-                {/* Header Row */}
                 <View style={styles.headerRow}>
                     <Image
                         source={require('../assets/images/alert-filled-icon.png')}
@@ -68,7 +67,6 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                     <Text style={styles.sectionTitle}>Flight Interruption Alert</Text>
                 </View>
 
-                {/* Flight Details */}
                 <View style={styles.detailsRow}>
                     <View>
                         <Text style={styles.text}>Your flight {flightInfo.flightNumber} has been delayed by {delayTime}.
@@ -92,7 +90,6 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
         );
     } else if (alertType === AlertType.MeetingConflict) {
         return conflicts.length > 0 && (<View style={styles.container}>
-            {/* Header Row */}
             <View style={styles.headerRow}>
                 <Image
                     source={require('../assets/images/reschedule-icon.png')}
@@ -101,7 +98,6 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                 <Text style={styles.sectionTitle}>Meeting Conflict</Text>
             </View>
 
-            {/* Flight Details */}
             <View style={styles.detailsRow}>
                 <View>
                     <Text style={styles.text}>{conflicts.length} Affected Meeting{conflicts.length !== 1 ? 's' : ''}</Text>

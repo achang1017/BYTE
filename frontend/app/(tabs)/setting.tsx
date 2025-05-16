@@ -45,18 +45,15 @@ export default function SettingScreen() {
     return (
       
         <ScrollView style={styles.container}>
-            {/*User Setting Header */}
             <View style={styles.header}>
                 <Text style={styles.title}>User Setting</Text>
             </View>
 
-            {/*User Profile */}
             <View style={styles.profile}>
                 <Image source={{ uri: userPhoto }} style={styles.userImage} />
                 <Text style={styles.title}>{displayName}</Text>
             </View>
 
-            {/*User Settings*/}
             <View style={styles.sections}>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Account</Text>
@@ -78,7 +75,6 @@ export default function SettingScreen() {
                     <Text style={styles.sectionTextLast}>Privacy Access Form: </Text>
                 </View>
             </View>
-            {/*Sign-out */}
             <TouchableHighlight style={styles.button} onPress={handleSignOut}>
                 <Text style={styles.buttonText}>Sign out</Text>
             </TouchableHighlight>

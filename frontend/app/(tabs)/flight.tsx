@@ -39,7 +39,6 @@ export default function FlightScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            {/* Detail flight section */}
             {flightInfos && flightInfos.map((flightInfo, index) => (
                 <View style={styles.section} key={index}>
                     <UpcomingFlight flightInfo={flightInfo}></UpcomingFlight>

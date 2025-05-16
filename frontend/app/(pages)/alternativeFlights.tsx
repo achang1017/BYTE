@@ -124,7 +124,6 @@ export default function AlternativeFlightScreen() {
         <View style={styles.container}>
 
             <ScrollView style={styles.scrollArea}>
-                {/* Filter */}
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} >
                     <View style={styles.filterRow} >
                         <TouchableOpacity style={[styles.filter, (filtered == 'Recommended' && { backgroundColor: '#012A86' })]} onPress={() => setRecommendedFilter()}>
@@ -145,7 +144,6 @@ export default function AlternativeFlightScreen() {
 
                     </View>
                 </ScrollView>
-                {/* Alternative flight section */}
                 {alternativeFlights && alternativeFlights.map((flight, index) => (
                     <TouchableOpacity key={index} style={styles.section} onPress={() => setSelectedFlight(flight)}>
                         <AlternativeFlight flightInfo={flight} isSelected={selectedFlight?.flightNumber === flight.flightNumber} />
@@ -153,7 +151,6 @@ export default function AlternativeFlightScreen() {
                 ))}
 
             </ScrollView >
-            {/* Booking button */}
             <View style={[styles.bottomButtonContainer]}>
                 <TouchableOpacity
                     style={[

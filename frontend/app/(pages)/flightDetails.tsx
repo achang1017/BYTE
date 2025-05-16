@@ -26,12 +26,9 @@ export default function FlightScreen() {
 
     return (
         <ScrollView style={styles.container}>
-
-            {/* Detail flight section */}
             <View style={styles.section}>
                 <FlightTracker flightInfo={flightInfo} ></FlightTracker>
             </View>
-
         </ScrollView>
     );
 }

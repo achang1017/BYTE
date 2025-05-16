@@ -32,9 +32,7 @@ export default function BookingScreen() {
         <View style={styles.container}>
             <ScrollView style={styles.scrollArea}>
 
-                {/* Detail flight section */}
                 <View style={styles.flightSection}>
-                    {/* old flight section */}
                     <FlightInfoBox departure={oldFlight.departure} arrival={oldFlight.arrival} departureTime={oldFlight.departureTime} arrivalTime={oldFlight.arrivalTime} flightNumber={oldFlight.flightNumber} />
                     <View>
                         <IconSymbol
@@ -44,12 +42,10 @@ export default function BookingScreen() {
                             style={styles.flightIcon}
                         />
                     </View>
-                    {/* new flight section */}
                     <FlightInfoBox departure={newFlight.departure} arrival={newFlight.arrival} departureTime={newFlight.departureTime} arrivalTime={newFlight.arrivalTime} flightNumber={newFlight.flightNumber} />
 
                 </View>
 
-                {/* Passenger detail section */}
                 <View style={styles.userSection}>
                     <Text style={styles.subTitle}>
                         Passenger Details
@@ -63,7 +59,6 @@ export default function BookingScreen() {
                     </View>
                 </View>
 
-                {/* Price detail section */}
                 <View style={styles.userSection}>
                     <Text style={styles.subTitle}>
                         Price Summary
@@ -78,7 +73,6 @@ export default function BookingScreen() {
 
             </ScrollView>
 
-            {/* Booking button */}
             <View style={styles.buttonSection}>
                 <View style={styles.bottomButtonContainer}>
                     <TouchableOpacity style={styles.backButton} onPress={() => { router.back() }

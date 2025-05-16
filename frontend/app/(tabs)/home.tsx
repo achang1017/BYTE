@@ -125,7 +125,6 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* User Info Header */}
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>Hello {displayName}</Text>
@@ -134,12 +133,10 @@ export default function Home() {
         <Image source={{ uri: userPhoto }} style={styles.userImage} />
       </View>
 
-      {/* Upcoming flight section */}
       <View style={styles.section}>
         <UpcomingFlight flightInfo={flightInfo} />
       </View>
 
-      {/* Alert section */}
       <View style={styles.section}>
         {alerts.map((alert) => (
           <Notification
