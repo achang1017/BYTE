@@ -95,12 +95,12 @@ export default function Home() {
         const calendarEvents = data.items || [];
         setConflicts(calendarEvents);
 
-        if (conflicts.length > 0) {
+        if (calendarEvents.length > 0) {
           const calendarAlert: Alert = {
             id: 2,
             type: AlertType.MeetingConflict,
             flightInfo,
-            conflicts: conflicts,
+            conflicts: calendarEvents,
           };
   
           setAlerts(prev => {
