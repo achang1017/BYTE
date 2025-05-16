@@ -72,7 +72,7 @@ export default function LoginScreen() {
     if (!auth.currentUser) return;
 
     if (!preferences || preferences === null || Object.keys(preferences).length === 0) {
-      router.replace('/(pages)/initialPreference');
+      router.replace('/(pages)/privacyRequest');
     } else if (preferences) {
       router.replace('/(tabs)/home');
     }
