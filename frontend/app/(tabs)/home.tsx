@@ -14,7 +14,7 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
-  const { gmailAccessToken } = useAuth();
+  const { gmailAccessToken, accessToken } = useAuth();
 
   const displayName = user?.displayName || 'User';
   const userPhoto = user?.photoURL || userImage;
@@ -80,13 +80,12 @@ export default function Home() {
     const checkConflicts = async () => {
 
         if (!flightInfo || !flightInfo.flightNumber || !flightInfo.arrivalTime || !flightInfo.departureTime) return;
-        const departureTime = flightInfo.newDepartureTime || flightInfo.departureTime;
-        const arrivalTime = flightInfo.newArrivalTime || flightInfo.arrivalTime;
-        const res = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${departureTime}&timeMax=${arrivalTime}&singleEvents=true`,
+        const departureTime = new Date(flightInfo.newDepartureTime || flightInfo.departureTime).toISOString();
+        const arrivalTime = new Date(flightInfo.newArrivalTime || flightInfo.arrivalTime).toISOString();
+        const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${departureTime}&timeMax=${arrivalTime}&singleEvents=true`,
           {
             headers: {
-              Authorization: `Bearer ${gmailAccessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           }
         );
@@ -96,12 +95,12 @@ export default function Home() {
         const calendarEvents = data.items || [];
         setConflicts(calendarEvents);
 
-        if (calendarEvents.length > 0) {
+        if (conflicts.length > 0) {
           const calendarAlert: Alert = {
             id: 2,
             type: AlertType.MeetingConflict,
             flightInfo,
-            conflicts: calendarEvents,
+            conflicts: conflicts,
           };
   
           setAlerts(prev => {
