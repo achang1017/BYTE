@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { auth, db } from '../firebase';
 import {
   signInWithCredential,
@@ -21,7 +21,8 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 import { useUserPreferences } from '../context/userPreferencesContext'; // Import the hook
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { set, setDate } from 'date-fns';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -31,6 +32,8 @@ export default function LoginScreen() {
   const router = useRouter();
   const { setAccessToken, setGmailAccessToken, setFirebaseReady } = useAuth();
   const { preferences, setPreferences } = useUserPreferences(); // Use the hook
+  const [login, setLogin] = useState(false);
+
 
   const config = {
     webClientId: googleClientIds?.web,
@@ -59,6 +62,7 @@ export default function LoginScreen() {
             setAccessToken(accessToken);
             setGmailAccessToken(accessToken);
             setFirebaseReady(true);
+            setLogin(true);
           })
           .catch((error) => {
             alert('Firebase sign-in failed: ' + error.message);
@@ -68,15 +72,31 @@ export default function LoginScreen() {
     }
   }, [response]);
 
-  useEffect(() => {
-    if (!auth.currentUser) return;
 
-    if (!preferences || preferences === null || Object.keys(preferences).length === 0) {
-      router.replace('/(pages)/privacyRequest');
-    } else if (preferences) {
-      router.replace('/(tabs)/home');
-    }
-  }, [preferences]);
+  useEffect(() => {
+    const checkPreferencesAndNavigate = async () => {
+
+      if (!preferences || preferences === null || Object.keys(preferences).length === 0) {
+        const userEmail = auth.currentUser!.email ?? '';
+        const userRef = doc(db, 'users', userEmail);
+
+        // set up the user db if it doesn't exist
+        try {
+          await setDoc(userRef, {
+            email: userEmail,
+            name: auth.currentUser?.displayName,
+          }, { merge: true });
+        } catch (error) {
+
+        }
+        router.replace('/(pages)/privacyRequest');
+      } else if (preferences) {
+        router.replace('/(tabs)/home');
+      }
+    };
+
+    checkPreferencesAndNavigate();
+  }, [login]);
 
   const signIn = async () => {
     try {
