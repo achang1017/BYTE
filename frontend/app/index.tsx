@@ -21,7 +21,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 
 import { useUserPreferences } from '../context/userPreferencesContext'; // Import the hook
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { set, setDate } from 'date-fns';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -73,29 +73,39 @@ export default function LoginScreen() {
   }, [response]);
 
 
+
   useEffect(() => {
     const checkPreferencesAndNavigate = async () => {
+      if (!auth.currentUser) return;
 
-      if (!preferences || preferences === null || Object.keys(preferences).length === 0) {
-        const userEmail = auth.currentUser!.email ?? '';
-        const userRef = doc(db, 'users', userEmail);
+      const userEmail = auth.currentUser.email ?? '';
+      const userRef = doc(db, 'users', userEmail);
 
-        // set up the user db if it doesn't exist
-        try {
+      try {
+        const docSnap = await getDoc(userRef);
+        const data = docSnap.exists() ? docSnap.data() : null;
+
+        if (!data || !data.preferences || Object.keys(data.preferences).length === 0) {
+
           await setDoc(userRef, {
             email: userEmail,
-            name: auth.currentUser?.displayName,
+            name: auth.currentUser.displayName ?? '',
+            preferences: {},
+            createdAt: new Date().toISOString(),
           }, { merge: true });
-        } catch (error) {
 
+          router.replace('/(pages)/privacyRequest');
+        } else {
+          router.replace('/(tabs)/home');
         }
-        router.replace('/(pages)/privacyRequest');
-      } else if (preferences) {
-        router.replace('/(tabs)/home');
+      } catch (error) {
+        console.error('Error fetching preferences:', error);
       }
     };
 
-    checkPreferencesAndNavigate();
+    if (login) {
+      checkPreferencesAndNavigate();
+    }
   }, [login]);
 
   const signIn = async () => {

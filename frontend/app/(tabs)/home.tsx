@@ -26,51 +26,41 @@ export default function Home() {
   function attachOffsetToISOString(base: string, referenceWithOffset: string): string {
     const offsetMatch = referenceWithOffset.match(/([+-]\d{2}:\d{2})$/);
     if (!offsetMatch) throw new Error('Invalid reference offset format');
-  
+
     const offset = offsetMatch[1];
     const trimmed = base.replace(/\.000$/, '');
-  
+
     return `${trimmed}${offset}`;
   }
-  
+
   // Fetch from Firestore directly
   useEffect(() => {
     const fetchFlightsFromFirestore = async () => {
       if (!user?.email) return;
 
       try {
-        // Fetch user's trips
-        const tripsRef = collection(db, 'users', user.email, 'trips');
-        const tripsSnapshot = await getDocs(tripsRef);
+        const response = await fetch(`http://localhost:3000/api/gmail/flights?email=${auth.currentUser!.email ?? ''}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-        if (!tripsSnapshot.empty) {
-          const tripData = tripsSnapshot.docs[0].data(); // Assuming the first trip for now
-          const flightNumbers: string[] = tripData.flights || [];
+        if (!response.ok) {
+          throw new Error('Failed to fetch flight data');
+        }
 
-          if (flightNumbers.length > 0) {
-            // Fetch flight details from Flights collection
-            const flightPromises = flightNumbers.map((flightNumber: string) => {
-              const flightRef = doc(db, 'flights', flightNumber);
-              return getDoc(flightRef);
-            });
-
-            const flightDocs = await Promise.all(flightPromises);
-            const flights = flightDocs.map((doc) => (doc.exists() ? doc.data() : null)).filter(Boolean);
-
-            if (flights.length > 0) {
-              setFlightInfo(flights[0] as FlightInfo); // Set the first flight as the current flight
-            } else {
-              console.log('No valid flights found for this user.');
-            }
-          } else {
-            console.log('No flights found in the trip.');
-          }
+        const data = await response.json();
+        if (data.length > 0) {
+          const flightInfo = data[0];
+          setFlightInfo(flightInfo);
         } else {
-          console.log('No trips found for this user.');
+          console.log('No valid flights found for this user.');
         }
       } catch (err) {
-        console.error('Error fetching trip info from Firestore:', err);
+        console.error('Error fetching flight info:', err);
       }
+
+
     };
 
     fetchFlightsFromFirestore();
@@ -79,35 +69,35 @@ export default function Home() {
   useEffect(() => {
     const checkConflicts = async () => {
 
-        if (!flightInfo || !flightInfo.flightNumber || !flightInfo.arrivalTime || !flightInfo.departureTime) return;
-        const departureTime = new Date(flightInfo.newDepartureTime || flightInfo.departureTime).toISOString();
-        const arrivalTime = new Date(flightInfo.newArrivalTime || flightInfo.arrivalTime).toISOString();
-        const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${departureTime}&timeMax=${arrivalTime}&singleEvents=true`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-      
-        const data = await res.json();
-      
-        const calendarEvents = data.items || [];
-        setConflicts(calendarEvents);
-
-        if (calendarEvents.length > 0) {
-          const calendarAlert: Alert = {
-            id: 2,
-            type: AlertType.MeetingConflict,
-            flightInfo,
-            conflicts: calendarEvents,
-          };
-  
-          setAlerts(prev => {
-            const deletePrevConflictAlert = prev.filter(alert => alert.type !== AlertType.MeetingConflict);
-            return [...deletePrevConflictAlert, calendarAlert];
-          });
+      if (!flightInfo || !flightInfo.flightNumber || !flightInfo.arrivalTime || !flightInfo.departureTime) return;
+      const departureTime = new Date(flightInfo.newDepartureTime || flightInfo.departureTime).toISOString();
+      const arrivalTime = new Date(flightInfo.newArrivalTime || flightInfo.arrivalTime).toISOString();
+      const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${departureTime}&timeMax=${arrivalTime}&singleEvents=true`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
+      );
+
+      const data = await res.json();
+
+      const calendarEvents = data.items || [];
+      setConflicts(calendarEvents);
+
+      if (calendarEvents.length > 0) {
+        const calendarAlert: Alert = {
+          id: 2,
+          type: AlertType.MeetingConflict,
+          flightInfo,
+          conflicts: calendarEvents,
+        };
+
+        setAlerts(prev => {
+          const deletePrevConflictAlert = prev.filter(alert => alert.type !== AlertType.MeetingConflict);
+          return [...deletePrevConflictAlert, calendarAlert];
+        });
+      }
     };
 
     checkConflicts();
@@ -126,7 +116,7 @@ export default function Home() {
         const flight = await response.json();
         let newFlightInfo = flightInfo;
         if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
-          
+
           newFlightInfo = {
             ...flightInfo,
             status: flight.status,

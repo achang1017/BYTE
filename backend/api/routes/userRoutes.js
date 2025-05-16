@@ -2,21 +2,25 @@ const express = require('express');
 const { db } = require('../../firebase/firebaseInit');
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email, name } = req.body;
 
-        if (!email) {
-            return res.status(400).json({ status: "error", message: "Email is required" });
+
+        if (!email || !name) {
+            return res.status(400).json({ status: "error", message: "User info is required" });
         }
 
         const userRef = db.collection('users').doc(email);
         const doc = await userRef.get();
 
+
         if (!doc.exists) {
             await userRef.set({
-                firstName: "test1",
-                lastName: "test2",
+                name: name,
+                email: email,
+            }, {
+                merge: true
             });
         }
 
