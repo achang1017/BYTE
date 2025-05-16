@@ -8,7 +8,6 @@ import {
 import { getFirestore } from 'firebase/firestore'; // import Firestore
 
 const firebaseKeys = Constants.expoConfig?.extra?.firebase;
-console.log("FIREBASE API KEY", Constants.expoConfig?.extra?.FIREBASE_API_KEY);
 
 const firebaseConfig = {
     apiKey: Constants.expoConfig?.extra?.FIREBASE_API_KEY,

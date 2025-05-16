@@ -14,14 +14,25 @@ import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
-  const { gmailAccessToken } = useAuth();
+  const { gmailAccessToken, accessToken } = useAuth();
 
   const displayName = user?.displayName || 'User';
   const userPhoto = user?.photoURL || userImage;
 
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [conflicts, setConflicts] = useState<any[]>([]);
 
+  function attachOffsetToISOString(base: string, referenceWithOffset: string): string {
+    const offsetMatch = referenceWithOffset.match(/([+-]\d{2}:\d{2})$/);
+    if (!offsetMatch) throw new Error('Invalid reference offset format');
+  
+    const offset = offsetMatch[1];
+    const trimmed = base.replace(/\.000$/, '');
+  
+    return `${trimmed}${offset}`;
+  }
+  
   // Fetch from Firestore directly
   useEffect(() => {
     const fetchFlightsFromFirestore = async () => {
@@ -66,6 +77,43 @@ export default function Home() {
   }, [user]);
 
   useEffect(() => {
+    const checkConflicts = async () => {
+
+        if (!flightInfo || !flightInfo.flightNumber || !flightInfo.arrivalTime || !flightInfo.departureTime) return;
+        const departureTime = new Date(flightInfo.newDepartureTime || flightInfo.departureTime).toISOString();
+        const arrivalTime = new Date(flightInfo.newArrivalTime || flightInfo.arrivalTime).toISOString();
+        const res = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${departureTime}&timeMax=${arrivalTime}&singleEvents=true`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      
+        const data = await res.json();
+      
+        const calendarEvents = data.items || [];
+        setConflicts(calendarEvents);
+
+        if (conflicts.length > 0) {
+          const calendarAlert: Alert = {
+            id: 2,
+            type: AlertType.MeetingConflict,
+            flightInfo,
+            conflicts: conflicts,
+          };
+  
+          setAlerts(prev => {
+            const deletePrevConflictAlert = prev.filter(alert => alert.type !== AlertType.MeetingConflict);
+            return [...deletePrevConflictAlert, calendarAlert];
+          });
+        }
+    };
+
+    checkConflicts();
+  }, [flightInfo]);
+
+  useEffect(() => {
     if (!flightInfo || !flightInfo.flightNumber || !flightInfo.departure || !flightInfo.departureTime) return;
 
     async function checkFlightInterruption() {
@@ -77,15 +125,19 @@ export default function Home() {
 
         const flight = await response.json();
         let newFlightInfo = flightInfo;
-        if (flightInfo && flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
+        if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
+          
           newFlightInfo = {
             ...flightInfo,
             status: flight.status,
             delay: flight.departure?.delay,
-            newDepartureTime: flight.departure?.actualTime,
-            newArrivalTime: flight.arrival?.estimatedTime,
+            newDepartureTime: flight.departure?.estimatedTime
+              ? attachOffsetToISOString(flight.departure.estimatedTime, flightInfo.departureTime)
+              : flight.departure?.estimatedTime,
+            newArrivalTime: flight.arrival?.estimatedTime
+              ? attachOffsetToISOString(flight.arrival.estimatedTime, flightInfo.departureTime)
+              : flight.arrival?.estimatedTime,
           };
-
           setFlightInfo(newFlightInfo);
 
           await fetch('http://localhost:3000/api/updateFlight', {
@@ -100,12 +152,15 @@ export default function Home() {
         }
 
         if (flight.departure?.delay > 0) {
-          const newAlert: Alert = {
-            id: Date.now(),
+          const flightAlert: Alert = {
+            id: 1,
             type: AlertType.FlightInteruption,
             flightInfo: newFlightInfo,
           }
-          setAlerts([newAlert]);
+          setAlerts(prev => {
+            const deletePrevFlightAlert = prev.filter(alert => alert.type !== AlertType.FlightInteruption);
+            return [...deletePrevFlightAlert, flightAlert];
+          });
         }
       } catch (err) {
         console.error('Error checking flight interruption:', err);
@@ -144,6 +199,7 @@ export default function Home() {
             alertType={alert.type}
             flightInfo={alert.flightInfo}
             onDismiss={() => dismissAlert(alert.id)}
+            conflicts={alert.conflicts}
           />
         ))}
       </View>

@@ -10,4 +10,5 @@ export type Alert = {
     id: number;
     type: AlertType;
     flightInfo: FlightInfo | null;
+    conflicts?: any[];
 };

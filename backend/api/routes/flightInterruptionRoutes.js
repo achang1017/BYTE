@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 
   try {
-    const formattedDepartureTime = new Date(departureTime).toISOString().slice(0, 19) + ".000";
+    const formattedDepartureTime = `${departureTime.replace(/([+-]\d{2}:\d{2})$/, '')}.000`;
     const scheduleResponse = await fetch(
       `https://aviation-edge.com/v2/public/timetable?key=${FLIGHT_API_KEY}&iataCode=${departure}&flight_iata=${flightNumber}&type=departure&dep_schTime=${formattedDepartureTime}`
     );

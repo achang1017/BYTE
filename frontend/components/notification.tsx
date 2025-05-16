@@ -3,17 +3,15 @@ import { useState, useEffect } from 'react';
 import { FlightInfo } from '@/dataType/flight';
 import { AlertType } from '@/dataType/alert';
 import { useRouter } from 'expo-router';
-import { useAuth } from '../authContext';
 
 type Props = {
     flightInfo: FlightInfo | null;
     alertType: AlertType;
     onDismiss: () => void;
+    conflicts?: any[];
 };
 
-export default function Notification({ flightInfo, alertType, onDismiss }: Props) {
-    const [conflicts, setConflicts] = useState<any[]>([]);
-    const { accessToken } = useAuth();
+export default function Notification({ flightInfo, alertType, onDismiss, conflicts }: Props) {
     const router = useRouter();
 
     if (!flightInfo) return null;
@@ -33,29 +31,6 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
         delayTime = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
     }
 
-    useEffect(() => {
-        const checkConflicts = async () => {
-
-            if (!flightInfo || !flightInfo.flightNumber || !flightInfo.arrivalTime || !flightInfo.departureTime) return;
-            const calendarEvents = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${flightInfo.departureTime}&timeMax=${flightInfo.arrivalTime}&singleEvents=true`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            }).then(res => res.json())
-                .then(data => data.items || [])
-                .catch(err => {
-                    console.error('Error accessing Google Calendar:', err);
-                    return [];
-                });
-
-            setConflicts(calendarEvents);
-        };
-
-        if (alertType === AlertType.MeetingConflict) {
-            checkConflicts();
-        }
-    }, [alertType]);
-
     if (alertType === AlertType.FlightInteruption) {
         return (
             <View style={styles.container}>
@@ -71,8 +46,8 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                     <View>
                         <Text style={styles.text}>Your flight {flightInfo.flightNumber} has been delayed by {delayTime}.
                         </Text>
-                        <Text style={styles.text}>New Departure time: {flightInfo.newDepartureTime}</Text>
-                        <Text style={styles.text}>New arrival time: {flightInfo.newArrivalTime || flightInfo.arrivalTime}</Text>
+                        <Text style={styles.text}>New Departure time: {flightInfo.newDepartureTime ?? "TBD"}</Text>
+                        <Text style={styles.text}>New arrival time: {flightInfo.newArrivalTime ?? "TBD"}</Text>
                     </View>
                 </View>
 
@@ -88,7 +63,7 @@ export default function Notification({ flightInfo, alertType, onDismiss }: Props
                 </TouchableOpacity>
             </View>
         );
-    } else if (alertType === AlertType.MeetingConflict) {
+    } else if (conflicts && alertType === AlertType.MeetingConflict) {
         return conflicts.length > 0 && (<View style={styles.container}>
             <View style={styles.headerRow}>
                 <Image
