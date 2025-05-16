@@ -21,29 +21,16 @@ export default function Home() {
 
   const [flightInfo, setFlightInfo] = useState<FlightInfo | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [conflicts, setConflicts] = useState<any[]>([]);
 
-  function convertUTCWithReferenceOffset(utcString: string, referenceWithOffset: string): string {
-    const offsetMatch = referenceWithOffset.match(/([+-])(\d{2}):(\d{2})$/);
+  function attachOffsetToISOString(base: string, referenceWithOffset: string): string {
+    const offsetMatch = referenceWithOffset.match(/([+-]\d{2}:\d{2})$/);
     if (!offsetMatch) throw new Error('Invalid reference offset format');
   
-    const sign = offsetMatch[1]; // "+" or "-"
-    const hours = parseInt(offsetMatch[2], 10);
-    const minutes = parseInt(offsetMatch[3], 10);
-    const totalOffsetMs = (hours * 60 + minutes) * 60 * 1000;
-    const offsetMs = sign === '+' ? totalOffsetMs : -totalOffsetMs;
+    const offset = offsetMatch[1];
+    const trimmed = base.replace(/\.000$/, '');
   
-    const utcDate = new Date(utcString);
-    const localDate = new Date(utcDate.getTime() + offsetMs);
-  
-    const pad = (n: number) => String(n).padStart(2, '0');
-    const year = localDate.getFullYear();
-    const month = pad(localDate.getMonth() + 1);
-    const day = pad(localDate.getDate());
-    const hour = pad(localDate.getHours());
-    const minute = pad(localDate.getMinutes());
-    const second = pad(localDate.getSeconds());
-  
-    return `${year}-${month}-${day}T${hour}:${minute}:${second}${sign}${pad(hours)}:${pad(minutes)}`;
+    return `${trimmed}${offset}`;
   }
   
   // Fetch from Firestore directly
@@ -90,6 +77,44 @@ export default function Home() {
   }, [user]);
 
   useEffect(() => {
+    const checkConflicts = async () => {
+
+        if (!flightInfo || !flightInfo.flightNumber || !flightInfo.arrivalTime || !flightInfo.departureTime) return;
+        const departureTime = flightInfo.newDepartureTime || flightInfo.departureTime;
+        const arrivalTime = flightInfo.newArrivalTime || flightInfo.arrivalTime;
+        const res = await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${departureTime}&timeMax=${arrivalTime}&singleEvents=true`,
+          {
+            headers: {
+              Authorization: `Bearer ${gmailAccessToken}`,
+            },
+          }
+        );
+      
+        const data = await res.json();
+      
+        const calendarEvents = data.items || [];
+        setConflicts(calendarEvents);
+
+        if (calendarEvents.length > 0) {
+          const calendarAlert: Alert = {
+            id: 2,
+            type: AlertType.MeetingConflict,
+            flightInfo,
+            conflicts: calendarEvents,
+          };
+  
+          setAlerts(prev => {
+            const deletePrevConflictAlert = prev.filter(alert => alert.type !== AlertType.MeetingConflict);
+            return [...deletePrevConflictAlert, calendarAlert];
+          });
+        }
+    };
+
+    checkConflicts();
+  }, [flightInfo]);
+
+  useEffect(() => {
     if (!flightInfo || !flightInfo.flightNumber || !flightInfo.departure || !flightInfo.departureTime) return;
 
     async function checkFlightInterruption() {
@@ -108,10 +133,10 @@ export default function Home() {
             status: flight.status,
             delay: flight.departure?.delay,
             newDepartureTime: flight.departure?.estimatedTime
-              ? convertUTCWithReferenceOffset(flight.departure.estimatedTime, flightInfo.departureTime)
+              ? attachOffsetToISOString(flight.departure.estimatedTime, flightInfo.departureTime)
               : flight.departure?.estimatedTime,
             newArrivalTime: flight.arrival?.estimatedTime
-              ? convertUTCWithReferenceOffset(flight.arrival.estimatedTime, flightInfo.departureTime)
+              ? attachOffsetToISOString(flight.arrival.estimatedTime, flightInfo.departureTime)
               : flight.arrival?.estimatedTime,
           };
           setFlightInfo(newFlightInfo);
@@ -128,12 +153,15 @@ export default function Home() {
         }
 
         if (flight.departure?.delay > 0) {
-          const newAlert: Alert = {
-            id: Date.now(),
+          const flightAlert: Alert = {
+            id: 1,
             type: AlertType.FlightInteruption,
             flightInfo: newFlightInfo,
           }
-          setAlerts([newAlert]);
+          setAlerts(prev => {
+            const deletePrevFlightAlert = prev.filter(alert => alert.type !== AlertType.FlightInteruption);
+            return [...deletePrevFlightAlert, flightAlert];
+          });
         }
       } catch (err) {
         console.error('Error checking flight interruption:', err);
@@ -175,6 +203,7 @@ export default function Home() {
             alertType={alert.type}
             flightInfo={alert.flightInfo}
             onDismiss={() => dismissAlert(alert.id)}
+            conflicts={alert.conflicts}
           />
         ))}
       </View>
