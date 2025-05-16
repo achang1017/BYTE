@@ -1,7 +1,7 @@
 import { Image, Text, View, ScrollView, Switch, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import Tooltip from 'react-native-walkthrough-tooltip';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { auth } from '../../firebase';
 import Checkbox from 'expo-checkbox';
 import { useUserPreferences } from '../../context/userPreferencesContext'; // Import the hook
@@ -99,16 +99,24 @@ export default function PreferenceScreen() {
         }
     };
     const toggleIsLayover = async () => {
-        const value: Boolean = !isLayover;
+        const value = !isLayover;
         setIsLayover(value);
+        if (isStopover) {
+            setIsStopover(false);
+            await updateDoc(preferenceRef, { 'preferences.isStopover': false });
+        }
         try {
             await updateDoc(preferenceRef, { 'preferences.isLayover': value });
         } catch (e) {
         }
     }
     const toggleIsStopover = async () => {
-        const value: Boolean = !isStopover;
+        const value = !isStopover;
         setIsStopover(value);
+        if (isLayover) {
+            setIsLayover(false);
+            await updateDoc(preferenceRef, { 'preferences.isLayover': false });
+        }
         try {
             await updateDoc(preferenceRef, { 'preferences.isStopover': value });
         } catch (e) {

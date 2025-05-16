@@ -2,9 +2,10 @@ import { Image, Text, View, ScrollView, Switch, StyleSheet, TouchableOpacity } f
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import Tooltip from 'react-native-walkthrough-tooltip';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth } from '../../firebase';
 import Checkbox from 'expo-checkbox';
+import { useUserPreferences } from '../../context/userPreferencesContext';
 
 export default function InitialPreferenceScreen() {
 
@@ -13,6 +14,30 @@ export default function InitialPreferenceScreen() {
     const userEmail = user?.email || "";
     const preferenceRef = doc(db, 'users', userEmail);
     const router = useRouter();
+
+    const { preferences } = useUserPreferences();
+
+    const defaultPreference = {
+        autoCalendarUpdate: 'false',
+        aiFlightRecommendation: 'false',
+        personalDataSync: 'false',
+        isWithinBudget: 'false',
+        isDurationPriority: 'false',
+        isBusinessPriority: 'false',
+        isClassPriority: 'false',
+        isSeatPriority: 'false',
+        isLayover: 'false',
+        isStopover: 'false',
+        preferredClass: "",
+        preferredSeat: "",
+        hasLegalName: 'true',
+        hasBirthDate: 'true',
+        hasBusinessID: 'true',
+        hasPassportID: 'true'
+    }
+    const setDefault = async () => { await setDoc(preferenceRef, { 'preferences': defaultPreference })};
+    if (!preferences || preferences === null || Object.keys(preferences).length === 0)
+        setDefault();
 
     const [isAutoCalendar, setIsAutoCalendar] = useState(false);
     const [isAiFlightRec, setIsAiFlightRec] = useState(false);
@@ -24,6 +49,11 @@ export default function InitialPreferenceScreen() {
     const [isSeat, setIsSeat] = useState(false);
     const [isLayover, setIsLayover] = useState(false);
     const [isStopover, setIsStopover] = useState(false);
+    const [hasLegalName, setHasLegalName] = useState(true);
+    const [hasBirthDate, setHasBirthDate] = useState(true);
+    const [hasBusinessID, setHasBusinessID] = useState(true);
+    const [hasPassportID, setHasPassportID] = useState(true);
+
     const [isEconomy, setIsEconomy] = useState(false);
     const [isBusiness, setIsBusiness] = useState(false);
     const [isFirst, setIsFirst] = useState(false);
@@ -33,11 +63,6 @@ export default function InitialPreferenceScreen() {
     const [showTipPrice, setTipPrice] = useState(false);
     const [showTipDuration, setTipDuration] = useState(false);
     const [showTipBusinessSchedule, setTipBusinessSchedule] = useState(false);
-
-    const [hasLegalName, setHasLegalName] = useState(true);
-    const [hasBirthDate, setHasBirthDate] = useState(true);
-    const [hasBusinessID, setHasBusinessID] = useState(true);
-    const [hasPassportID, setHasPassportID] = useState(true);
 
     const toggleAutoCalendar = async (value: boolean) => {
         setIsAutoCalendar(value);
@@ -98,6 +123,10 @@ export default function InitialPreferenceScreen() {
     const toggleIsLayover = async () => {
         const value = !isLayover;
         setIsLayover(value);
+        if (isStopover) {
+            setIsStopover(false);
+            await updateDoc(preferenceRef, { 'preferences.isStopover': false });
+        }
         try {
             await updateDoc(preferenceRef, { 'preferences.isLayover': value });
         } catch (e) {
@@ -106,6 +135,10 @@ export default function InitialPreferenceScreen() {
     const toggleIsStopover = async () => {
         const value = !isStopover;
         setIsStopover(value);
+        if (isLayover) {
+            setIsLayover(false);
+            await updateDoc(preferenceRef, { 'preferences.isLayover': false });
+        }
         try {
             await updateDoc(preferenceRef, { 'preferences.isStopover': value });
         } catch (e) {
@@ -229,7 +262,7 @@ export default function InitialPreferenceScreen() {
                 {/* Service */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Enable features that help reschedule.</Text>
-                    <View style={styles.sectionContent}>
+                    <View style={[styles.sectionContent, styles.sectionContentFirst]}>
                         <View style={styles.sectionText}>
                             <Text style={styles.sectionSubtitle}>Automatic Calendar Update</Text>
                             <Text style={styles.sectionDesc}>To automatically update new schedule on your calendar</Text>
@@ -270,7 +303,7 @@ export default function InitialPreferenceScreen() {
                 {/* Alternative Flight Priority */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Share your priority in finding alternative flights.</Text>
-                    <View style={styles.sectionContent}>
+                    <View style={[styles.sectionContent, styles.sectionContentFirst]}>
                         <Text style={styles.sectionSubtitle}>Price</Text>
                         <View style={styles.tooltipPosition}>
                             <Tooltip
@@ -339,7 +372,7 @@ export default function InitialPreferenceScreen() {
                         <View style={styles.tooltipPosition}>
                             <Tooltip
                                 isVisible={showTipBusinessSchedule}
-                                content={<Text>Prioritize minimum meeting conflicts</Text>}
+                                content={<Text>Minimum meeting {'\n'}conflicts</Text>}
                                 placement='right'
                                 onClose={() => setTipBusinessSchedule(false)}
                             >
@@ -419,7 +452,7 @@ export default function InitialPreferenceScreen() {
                 {/* Personal Data */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Select data to synchronize from your SAP Concur account.</Text>
-                    <View style={styles.sectionContent}>
+                    <View style={[styles.sectionContent, styles.sectionContentFirst]}>
                         <Text style={styles.sectionSubtitle}>Legal Name</Text>
                         <Checkbox
                             style={styles.checkbox}
@@ -482,10 +515,9 @@ const styles = StyleSheet.create({
     // Header
     header: {
         justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#000',
+        paddingLeft: 34,
+        paddingTop: 20,
+        paddingBottom: 20,
     },
     title: {
         fontSize: 21,
@@ -498,19 +530,13 @@ const styles = StyleSheet.create({
     },
     section: {
         width: 343,
-        marginTop: 25,
+        paddingBottom: 15,
     },
     sectionTitle: {
         fontSize: 16,
-        fontWeight: 'bold',
         color: '#000',
-        padding: 10,
+        paddingBottom: 10,
         paddingLeft: 15,
-        backgroundColor: '#BFCAE1',
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15,
-        borderWidth: 1,
-        borderColor: '#000',
     },
     sectionContent: {
         display: 'flex',
@@ -536,6 +562,10 @@ const styles = StyleSheet.create({
         color: '#676767',
         paddingLeft: 15,
         paddingBottom: 5,
+    },
+    sectionContentFirst: {
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
     },
     sectionContentLast: {
         borderBottomLeftRadius: 15,

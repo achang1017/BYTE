@@ -3,11 +3,11 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
-import { useUserPreferences } from '../../context/userPreferencesContext'; // Import the hook
+import { useUserPreferences } from '../../context/userPreferencesContext';
 
 export default function SettingScreen() {
     const router = useRouter();
-    const { preferences } = useUserPreferences(); // Use the hook to access preferences
+    const { preferences } = useUserPreferences();
 
     const userImage = '../../assets/images/user-icon.png';
     const user = auth.currentUser;
@@ -17,19 +17,25 @@ export default function SettingScreen() {
     const userPhone = user?.phoneNumber || 'none';
     const userEmail = user?.email || "example@uw.edu";
 
-    const [autoCalendar, setAutoCalendar] = useState<String>("Off");
-    const [aiFlightRec, setAiFlightRec] = useState<String>("Off");
-    const [dataSync, setDataSync] = useState<String>("Off");
+    const [autoCalendar, setAutoCalendar] = useState<String>('Off');
+    const [aiFlightRec, setAiFlightRec] = useState<String>('Off');
+    const [dataSync, setDataSync] = useState<String>('Off');
 
     useEffect(() => {
         if(preferences.preferences.autoCalendarUpdate) {
-            setAutoCalendar("On");
+            setAutoCalendar('On');
+        } else {
+            setAutoCalendar('Off');
         }
         if(preferences.preferences.aiFlightRecommendation) {
-            setAiFlightRec("On");
+            setAiFlightRec('On');
+        } else {
+            setAiFlightRec('Off');
         }
         if(preferences.preferences.personalDataSync) {
-            setDataSync("On");
+            setDataSync('On');
+        } else {
+            setDataSync('Off');
         }
     })
 
@@ -43,7 +49,6 @@ export default function SettingScreen() {
     };
 
     return (
-      
         <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>User Setting</Text>
@@ -94,17 +99,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
-        padding: 20, // Added padding for better spacing
+        padding: 20, 
     },
     text: {
         color: '#fff',
-        fontSize: 24, // Increased font size
-        marginBottom: 20, // Added margin
+        fontSize: 24, 
+        marginBottom: 20, 
     },
     preferenceText: {
         color: '#fff',
         fontSize: 16,
-        marginBottom: 10, // Margin between preference lines
+        marginBottom: 10,
     },
     profile: {
         marginTop: 20,
