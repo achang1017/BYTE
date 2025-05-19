@@ -23,15 +23,15 @@ export default function Home() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [conflicts, setConflicts] = useState<any[]>([]);
 
-  function attachOffsetToISOString(base: string, referenceWithOffset: string): string {
-    const offsetMatch = referenceWithOffset.match(/([+-]\d{2}:\d{2})$/);
-    if (!offsetMatch) throw new Error('Invalid reference offset format');
+  // function attachOffsetToISOString(base: string, referenceWithOffset: string): string {
+  //   const offsetMatch = referenceWithOffset.match(/([+-]\d{2}:\d{2})$/);
+  //   if (!offsetMatch) throw new Error('Invalid reference offset format');
 
-    const offset = offsetMatch[1];
-    const trimmed = base.replace(/\.000$/, '');
+  //   const offset = offsetMatch[1];
+  //   const trimmed = base.replace(/\.000$/, '');
 
-    return `${trimmed}${offset}`;
-  }
+  //   return `${trimmed}${offset}`;
+  // }
 
   // Fetch from Firestore directly
   useEffect(() => {
@@ -116,21 +116,18 @@ export default function Home() {
         const flight = await response.json();
         let newFlightInfo = flightInfo;
         if (flight.departure?.delay && flight.departure?.delay != flightInfo.delay) {
-
           newFlightInfo = {
             ...flightInfo,
             status: flight.status,
             delay: flight.departure?.delay,
             newDepartureTime: flight.departure?.estimatedTime
-              ? attachOffsetToISOString(flight.departure.estimatedTime, flightInfo.departureTime)
-              : flight.departure?.estimatedTime,
+              ? flight.departure?.estimatedTime : "TBD",
             newArrivalTime: flight.arrival?.estimatedTime
-              ? attachOffsetToISOString(flight.arrival.estimatedTime, flightInfo.departureTime)
-              : flight.arrival?.estimatedTime,
+              ? flight.arrival?.estimatedTime : "TBD",
           };
           setFlightInfo(newFlightInfo);
 
-          await fetch('http://localhost:3000/api/updateFlight', {
+          await fetch(`http://localhost:3000/api/updateFlight?email=${auth.currentUser!.email ?? ''}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
