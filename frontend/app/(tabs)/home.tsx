@@ -9,8 +9,6 @@ import { FlightInfo } from '@/dataType/flight';
 import { AlertType, Alert } from '@/dataType/alert';
 import Notification from '@/components/notification';
 
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-
 export default function Home() {
   const userImage = '../../assets/images/user-icon.png';
   const user = auth.currentUser;
@@ -31,6 +29,10 @@ export default function Home() {
     const trimmed = base.replace(/\.000$/, '');
 
     return `${trimmed}${offset}`;
+  }
+
+  function isSameAlert(a: Alert, b: Alert): boolean {
+    return a.type === b.type && JSON.stringify(a.flightInfo) === JSON.stringify(b.flightInfo);
   }
 
   // Fetch from Firestore directly
@@ -94,6 +96,8 @@ export default function Home() {
         };
 
         setAlerts(prev => {
+          const existing = prev.find(alert => isSameAlert(alert, calendarAlert));
+          if (existing) return prev;
           const deletePrevConflictAlert = prev.filter(alert => alert.type !== AlertType.MeetingConflict);
           return [...deletePrevConflictAlert, calendarAlert];
         });
@@ -110,7 +114,6 @@ export default function Home() {
       try {
         if (!flightInfo) return;
         const response = await fetch(`http://localhost:3000/api/flightInterruption?flightNumber=${flightInfo.flightNumber}&departure=${flightInfo.departure}&departureTime=${flightInfo.departureTime}`);
-
         if (!response.ok) throw new Error('Failed to fetch flight interruption');
 
         const flight = await response.json();
@@ -129,16 +132,6 @@ export default function Home() {
               : flight.arrival?.estimatedTime,
           };
           setFlightInfo(newFlightInfo);
-
-          await fetch('http://localhost:3000/api/updateFlight', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              flightInfo: newFlightInfo,
-            }),
-          });
         }
 
         if (flight.departure?.delay > 0) {
@@ -148,6 +141,8 @@ export default function Home() {
             flightInfo: newFlightInfo,
           }
           setAlerts(prev => {
+            const existing = prev.find(alert => isSameAlert(alert, flightAlert));
+            if (existing) return prev;
             const deletePrevFlightAlert = prev.filter(alert => alert.type !== AlertType.FlightInteruption);
             return [...deletePrevFlightAlert, flightAlert];
           });

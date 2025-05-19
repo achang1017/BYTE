@@ -13,11 +13,10 @@ router.get('/', async (req, res) => {
   }
 
   try {
-    const formattedDepartureTime = `${departureTime.replace(/([+-]\d{2}:\d{2})$/, '')}.000`;
+    const formattedDepartureTime = `${departureTime.replace(/([+-]\d{2}:\d{2})$/, ':00')}.000`;
     const scheduleResponse = await fetch(
       `https://aviation-edge.com/v2/public/timetable?key=${FLIGHT_API_KEY}&iataCode=${departure}&flight_iata=${flightNumber}&type=departure&dep_schTime=${formattedDepartureTime}`
     );
-    
     if (!scheduleResponse.ok) throw new Error('Failed to fetch real time flight schedule');
     const scheduleData = await scheduleResponse.json();
     const flight = scheduleData[0];
