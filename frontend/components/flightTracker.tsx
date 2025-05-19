@@ -60,7 +60,7 @@ export default function FlightTracker({ flightInfo }: Props) {
                 bullets: [
                     `Flight has been delayed by ${delayTime}`,
                     `New Departure Time: ${flightInfo.newDepartureTime ?? 'TBD'}`,
-                    `New Arrival Time: ${flightInfo.newArrivalTime ?? 'TBD'}`, 
+                    `New Arrival Time: ${flightInfo.newArrivalTime ?? 'TBD'}`,
                 ],
             }]
             : []),
@@ -70,10 +70,17 @@ export default function FlightTracker({ flightInfo }: Props) {
             bullets: ['Boarding to begin soon'],
         },
     ];
-    
+
 
     const newArriavaltime = new Date(flightInfo.arrivalTime);
     const newDeparturetime = new Date(flightInfo.departureTime);
+
+    function splitIso(iso: string) {
+        const [date, timeWithOffset] = iso.split("T");
+
+        return { date, timeWithOffset };
+    }
+
 
 
     return (
@@ -85,8 +92,10 @@ export default function FlightTracker({ flightInfo }: Props) {
             <View style={styles.flightRow}>
                 <View style={styles.locationBox}>
                     <Text style={styles.code}>{flightInfo.departure}</Text>
-                    <Text style={styles.text}>{newDeparturetime.toDateString()}</Text>
-                    <Text style={styles.text}>{newDeparturetime.toTimeString()}</Text>                </View>
+                    <Text style={styles.text}>{splitIso(flightInfo.departureTime).date}</Text>
+                    <Text style={styles.text}>{splitIso(flightInfo.departureTime).timeWithOffset}</Text>
+
+                </View>
 
                 <View style={styles.middleBox}>
                     <Image
@@ -98,8 +107,10 @@ export default function FlightTracker({ flightInfo }: Props) {
 
                 <View style={styles.locationBox}>
                     <Text style={styles.code}>{flightInfo.arrival}</Text>
-                    <Text style={styles.text}>{newArriavaltime.toDateString()}</Text>
-                    <Text style={styles.text}>{newArriavaltime.toTimeString()}</Text>                </View>
+                    <Text style={styles.text}>{splitIso(flightInfo.arrivalTime).date}</Text>
+                    <Text style={styles.text}>{splitIso(flightInfo.arrivalTime).timeWithOffset}</Text>
+
+                </View>
             </View>
 
             <View style={styles.timelineRow}>
@@ -172,7 +183,7 @@ const styles = StyleSheet.create({
     },
     flightRow: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         marginTop: 20,
     },
     detailsRow: {

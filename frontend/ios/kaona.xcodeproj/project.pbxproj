@@ -7,27 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		05F9E13BF6FF414382D5A2A3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C2212383B50B4BAE9EF60F47 /* GoogleService-Info.plist */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		25F9ED6F12DF8B4C5E39F681 /* Pods_kaona.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86806B36BE8F4F4A24A439C0 /* Pods_kaona.framework */; };
-		39A4A0FD375C0FFE9A80E04F /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A264522A3B29255A48120A99 /* ExpoModulesProvider.swift */; };
+		230D740B43CA4E73A0452B29 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CBE6F46807C34108A4EBBC67 /* GoogleService-Info.plist */; };
+		2ED0351713A8E4B797793659 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F78776CA66F32A19B99A17 /* ExpoModulesProvider.swift */; };
+		3985F32AAF70BC9067CCEE2B /* Pods_kaona.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38441AFA524D8371BEB30C58 /* Pods_kaona.framework */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		BC5369D5C36A42A7D7D6415D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = DCBC4B83E0B6A3B38E6DE19D /* PrivacyInfo.xcprivacy */; };
+		CA8600F17FC214B5C49417D2 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 277397FAE70FC3F8386A4953 /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0191CD372DE5A8D8F4171598 /* Pods-kaona.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kaona.release.xcconfig"; path = "Target Support Files/Pods-kaona/Pods-kaona.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* kaona.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kaona.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = kaona/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = kaona/Info.plist; sourceTree = "<group>"; };
-		77D138F65055D9B37A037675 /* Pods-kaona.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kaona.debug.xcconfig"; path = "Target Support Files/Pods-kaona/Pods-kaona.debug.xcconfig"; sourceTree = "<group>"; };
-		86806B36BE8F4F4A24A439C0 /* Pods_kaona.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_kaona.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A264522A3B29255A48120A99 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-kaona/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		277397FAE70FC3F8386A4953 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = kaona/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		38441AFA524D8371BEB30C58 /* Pods_kaona.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_kaona.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		67F78776CA66F32A19B99A17 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-kaona/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = kaona/SplashScreen.storyboard; sourceTree = "<group>"; };
+		AFC39CAC297E4454934222DF /* Pods-kaona.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kaona.release.xcconfig"; path = "Target Support Files/Pods-kaona/Pods-kaona.release.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		CAB1144725E24B00B3359B40 /* kaona-Bridging-Header.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = "kaona-Bridging-Header.h"; path = "kaona/kaona-Bridging-Header.h"; sourceTree = "<group>"; };
+		C1B8B5D241985EC87410EC68 /* Pods-kaona.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kaona.debug.xcconfig"; path = "Target Support Files/Pods-kaona/Pods-kaona.debug.xcconfig"; sourceTree = "<group>"; };
+		CBE6F46807C34108A4EBBC67 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "kaona/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = kaona/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* kaona-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "kaona-Bridging-Header.h"; path = "kaona/kaona-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -38,7 +39,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25F9ED6F12DF8B4C5E39F681 /* Pods_kaona.framework in Frameworks */,
+				3985F32AAF70BC9067CCEE2B /* Pods_kaona.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,37 +55,19 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				C2212383B50B4BAE9EF60F47 /* GoogleService-Info.plist */,
-				DCBC4B83E0B6A3B38E6DE19D /* PrivacyInfo.xcprivacy */,
+				CBE6F46807C34108A4EBBC67 /* GoogleService-Info.plist */,
+				277397FAE70FC3F8386A4953 /* PrivacyInfo.xcprivacy */,
 			);
 			name = kaona;
-			sourceTree = "<group>";
-		};
-		28C0D6E71D1305E5675AB09B /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				A76501F8E4968B1EF9E858A3 /* kaona */,
-			);
-			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				86806B36BE8F4F4A24A439C0 /* Pods_kaona.framework */,
+				38441AFA524D8371BEB30C58 /* Pods_kaona.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		7F0D0F8628A8B4DF53BF453D /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				77D138F65055D9B37A037675 /* Pods-kaona.debug.xcconfig */,
-				0191CD372DE5A8D8F4171598 /* Pods-kaona.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -101,8 +84,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				7F0D0F8628A8B4DF53BF453D /* Pods */,
-				28C0D6E71D1305E5675AB09B /* ExpoModulesProviders */,
+				8F7BF076340F05C122B38A09 /* Pods */,
+				FB883E2F9E37C18C8FBDF34C /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -117,12 +100,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A76501F8E4968B1EF9E858A3 /* kaona */ = {
+		8F7BF076340F05C122B38A09 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A264522A3B29255A48120A99 /* ExpoModulesProvider.swift */,
+				C1B8B5D241985EC87410EC68 /* Pods-kaona.debug.xcconfig */,
+				AFC39CAC297E4454934222DF /* Pods-kaona.release.xcconfig */,
 			);
-			name = kaona;
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -134,6 +119,22 @@
 			path = kaona/Supporting;
 			sourceTree = "<group>";
 		};
+		FB883E2F9E37C18C8FBDF34C /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				FD3D0B4981BAA5C0DB50187F /* kaona */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		FD3D0B4981BAA5C0DB50187F /* kaona */ = {
+			isa = PBXGroup;
+			children = (
+				67F78776CA66F32A19B99A17 /* ExpoModulesProvider.swift */,
+			);
+			name = kaona;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -142,13 +143,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "kaona" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				8FAFC76FEC184529EE44E731 /* [Expo] Configure project */,
+				CF11DA912AC0888C3477B3C3 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				57AD881B59E6AA207FD7D516 /* [CP] Embed Pods Frameworks */,
+				15C7E98F69CDCD60DAE96FEB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -198,8 +199,8 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				05F9E13BF6FF414382D5A2A3 /* GoogleService-Info.plist in Resources */,
-				BC5369D5C36A42A7D7D6415D /* PrivacyInfo.xcprivacy in Resources */,
+				230D740B43CA4E73A0452B29 /* GoogleService-Info.plist in Resources */,
+				CA8600F17FC214B5C49417D2 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,7 +244,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		57AD881B59E6AA207FD7D516 /* [CP] Embed Pods Frameworks */ = {
+		15C7E98F69CDCD60DAE96FEB /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -303,25 +304,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-kaona/Pods-kaona-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		85C2C653638F47AF217EAC7A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-kaona/Pods-kaona-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-kaona/Pods-kaona-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C46089658396EDF05F378B20 /* [Expo] Configure project */ = {
+		CF11DA912AC0888C3477B3C3 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -348,7 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				39A4A0FD375C0FFE9A80E04F /* ExpoModulesProvider.swift in Sources */,
+				2ED0351713A8E4B797793659 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,7 +340,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 77D138F65055D9B37A037675 /* Pods-kaona.debug.xcconfig */;
+			baseConfigurationReference = C1B8B5D241985EC87410EC68 /* Pods-kaona.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -393,7 +376,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0191CD372DE5A8D8F4171598 /* Pods-kaona.release.xcconfig */;
+			baseConfigurationReference = AFC39CAC297E4454934222DF /* Pods-kaona.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
