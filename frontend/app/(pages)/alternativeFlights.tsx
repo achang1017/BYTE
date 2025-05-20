@@ -44,8 +44,15 @@ export default function AlternativeFlightScreen() {
     useEffect(() => {
         const fetchAlternativeFlights = async () => {
             try {
+                // Get user email from auth (import if not already)
+                // @ts-ignore
+                const user = require('@/firebase').auth.currentUser;
+                const userEmail = user?.email;
+                if (!userEmail) {
+                    throw new Error('User not logged in');
+                }
                 const encodedFlightInfo = encodeURIComponent(JSON.stringify(flightInfo));
-                const response = await fetch(`http://localhost:3000/api/alternativeFlights?flightInfo=${encodedFlightInfo}`);
+                const response = await fetch(`http://localhost:3000/api/alternativeFlights?flightInfo=${encodedFlightInfo}&email=${encodeURIComponent(userEmail)}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch alternative flights');
                 }

@@ -46,19 +46,42 @@ const ALT_FLIGHTS_SCHEMA = {
 router.get('/', async (req, res) => {
     try {
         const rawFlightInfo = req.query.flightInfo;
+        const userEmail = req.query.email; 
         if (!rawFlightInfo) {
             return res.status(400).json({ error: 'Missing flightInfo' });
         }
+        if (!userEmail) {
+            return res.status(400).json({ error: 'Missing user email' });
+        }
         const flightInfo = JSON.parse(rawFlightInfo);
+
+        let preferredClass = undefined;
+        try {
+            const userDoc = await db.collection('users').doc(userEmail).get();
+            if (userDoc.exists) {
+                const userData = userDoc.data();
+                if (userData && userData.preferences && userData.preferences.preferredClass) {
+                    preferredClass = userData.preferences.preferredClass;
+                }
+            }
+        } catch (err) {
+            console.error('Error fetching user preferences:', err);
+        }
 
         const openai = new OpenAI({
             apiKey: process.env.OPENAI_API_KEY,
         });
 
+        let prompt = `Generate a list of at least 5 upcoming flights from ${flightInfo.departure} to ${flightInfo.arrival}. Include details such as airline, flight number, departure and arrival times (ISO format), duration (e.g., 2h 30m), price, seat class, and layover time. Ensure the data is accurate and formatted as JSON.`;
+        if (preferredClass) {
+            prompt += ` At least 2 flights must be ${preferredClass} class if available. Only include flights with class: ${preferredClass} if possible.`;
+        }
+        console.log('Final OpenAI prompt:', prompt);
+
         const response = await openai.responses.create({
             model: "gpt-4o",
             tools: [{ type: "web_search_preview" }],
-            input: `Generate a list of at least 5 upcoming flights from ${flightInfo.departure} to ${flightInfo.arrival}. Include details such as airline, flight number, departure and arrival times (ISO format), duration (e.g., 2h 30m), price, seat class, and layover time. Ensure the data is accurate and formatted as JSON.`,
+            input: prompt,
             text: {
                 "format": {
                     "type": "json_schema",
