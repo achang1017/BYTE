@@ -39,15 +39,6 @@ export default function SettingScreen() {
         }
     })
 
-    const userImage = '../../assets/images/user-icon.png';
-    const user = auth.currentUser;
-    
-    const displayName = user?.displayName || 'User';
-    const userPhoto = user?.photoURL || userImage;
-    const userPhone = user?.phoneNumber || 'none';
-    const userEmail = user?.email || "example@uw.edu";
-
-
     const handleSignOut = async () => {
         try {
             await signOut(auth);
@@ -77,7 +68,6 @@ export default function SettingScreen() {
 
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Personal Setting</Text>
-<<<<<<< HEAD
                     <Text style={styles.sectionText}>Automatic Calendar Sync: { autoCalendar }</Text>
                     <Text style={styles.sectionText}>AI Generated Recommended Flights: { aiFlightRec }</Text>
                     <Text style={styles.sectionText}>Personal Data Sync: { dataSync }</Text>
@@ -87,16 +77,6 @@ export default function SettingScreen() {
                             <Image source={require('../../assets/images/arrow.png')} style={styles.arrow} />
                         </View>
                     </TouchableOpacity>
-=======
-                    <Text style={styles.sectionText}>Automatic Calendar Sync: </Text>
-                    <Text style={styles.sectionText}>AI Generated Recommended Flights: </Text>
-                    <TouchableHighlight onPress={() => { router.push({
-                        pathname: '/(pages)/alternativeFlights',
-                        params: { },
-                    })}}>
-                        <Text style={styles.sectionText} >Preference</Text>
-                    </TouchableHighlight>
->>>>>>> 07cf87d (Set router for preference page)
                     <Text style={styles.sectionTextLast}>Privacy Access Form: </Text>
                 </View>
             </View>
@@ -121,71 +101,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         padding: 20, 
     },
-    profile: {
-        marginTop: 20,
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    // Body
-    userImage: {
-        width: 77,
-        height: 77,
-        borderRadius: 50,
-    },
-    title: {
-        fontSize: 21,
-        fontWeight: 'bold',
-    },
-    sections: {
-        alignItems: 'center',
-        marginBottom: 25,
-    },
-    section: {
-        width: 343,
-        marginTop: 10,
-    },
-    sectionTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#000',
-        padding: 10,
-        paddingLeft: 15,
-        backgroundColor: '#BFCAE1',
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15,
-        borderWidth: 1,
-        borderColor: '#000',
-    },
-    sectionText: {
-        fontSize: 12,
-        color: '#000',
-        fontWeight: 'bold',
-        padding: 10,
-        paddingLeft: 15,
-        borderWidth: 1,
-        borderColor: '#000',
-    },
-    sectionTextLast: {
-        fontSize: 12,
-        color: '#000',
-        fontWeight: 'bold',
-        padding: 10,
-        paddingLeft: 15,
-        borderBottomLeftRadius: 15,
-        borderBottomRightRadius: 15,
-        borderWidth: 1,
-        borderColor: '#000',
-    },
-    button: {
-        width: 343,
-        borderRadius: 15,
-        padding: 10,
-        alignSelf: 'center',
-        alignItems: 'center',
-        backgroundColor: '#012A86',
-    },
-    buttonText: {
-        fontSize: 12,
+    text: {
         color: '#fff',
         fontSize: 24, 
         marginBottom: 20, 
