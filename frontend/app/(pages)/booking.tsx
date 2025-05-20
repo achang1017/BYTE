@@ -1,7 +1,6 @@
 import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FlightInfo, AltFlightInfo } from '@/dataType/flight';
-import { IconSymbol } from '@/components/ui/IconSymbol.ios';
 import { auth } from '../../firebase';
 
 
@@ -35,12 +34,7 @@ export default function BookingScreen() {
                 <View style={styles.flightSection}>
                     <FlightInfoBox departure={oldFlight.departure} arrival={oldFlight.arrival} departureTime={oldFlight.departureTime} arrivalTime={oldFlight.arrivalTime} flightNumber={oldFlight.flightNumber} />
                     <View>
-                        <IconSymbol
-                            name="arrow.right"
-                            size={20}
-                            color={'black'}
-                            style={styles.flightIcon}
-                        />
+                        {/* <Image source={require('../../assets/images/flight.png')} style={styles.flightIcon} /> */}
                     </View>
                     <FlightInfoBox departure={newFlight.departure} arrival={newFlight.arrival} departureTime={newFlight.departureTime} arrivalTime={newFlight.arrivalTime} flightNumber={newFlight.flightNumber} />
 
@@ -137,6 +131,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingTop: 50,
     },
     scrollArea: {
         flex: 1,

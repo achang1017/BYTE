@@ -42,7 +42,9 @@ exports.getFlightEmails = async (accessToken) => {
 
     if (bodyData) {
       const flightInfo = extractFlightInfo(bodyData);
-      parsedFlights.push(flightInfo);
+      if (flightInfo.flightNumber !== 'Unknown') {
+        parsedFlights.push(flightInfo);
+      }
     }
   }
 

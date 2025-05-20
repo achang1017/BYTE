@@ -47,7 +47,6 @@ export default function FlightTracker({ flightInfo }: Props) {
                 `Flight Date: ${flightInfo.date}`,
                 `Gate: ${flightInfo.gate}`,
                 `Flight: ${flightInfo.flightNumber}`,
-                `Airline: TODO`,
                 `Flight Departure: ${flightInfo.departure}`,
                 `Flight Arrival: ${flightInfo.arrival}`,
                 `Duration: ${flightInfo.duration}`,
@@ -59,8 +58,8 @@ export default function FlightTracker({ flightInfo }: Props) {
                 title: 'Flight Delayed',
                 bullets: [
                     `Flight has been delayed by ${delayTime}`,
-                    `New Departure Time: ${flightInfo.newDepartureTime ?? 'TBD'}`,
-                    `New Arrival Time: ${flightInfo.newArrivalTime ?? 'TBD'}`,
+                    `New Departure Time: ${flightInfo.newDepartureTime ?? 'Not confirmed'}`,
+                    `New Arrival Time: ${flightInfo.newArrivalTime ?? 'Not confirmed'}`,
                 ],
             }]
             : []),

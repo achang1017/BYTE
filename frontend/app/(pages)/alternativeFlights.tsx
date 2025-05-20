@@ -12,7 +12,7 @@ type FilterType = 'Recommended' | 'Duration' | 'Price' | 'Business Schedule' | '
 export default function AlternativeFlightScreen() {
     const params = useLocalSearchParams();
     const [alternativeFlights, setAlternativeFlights] = useState<AltFlightInfo[] | null>(null);
-    const [filtered, setFiltered] = useState<FilterType | null>(null);
+    const [filtered, setFiltered] = useState<FilterType | null>('Recommended');
     const [selectedFlight, setSelectedFlight] = useState<AltFlightInfo | null>(null);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
@@ -191,7 +191,8 @@ const styles = StyleSheet.create({
     },
     scrollArea: {
         flex: 1,
-        paddingHorizontal: 30,
+        paddingTop: 50,
+        paddingHorizontal: 20,
     },
     section: {
         marginTop: 10,

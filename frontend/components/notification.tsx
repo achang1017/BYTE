@@ -47,7 +47,7 @@ export default function Notification({ flightInfo, alertType, onDismiss, conflic
                         <Text style={styles.text}>Your flight {flightInfo.flightNumber} has been delayed by {delayTime}.
                         </Text>
                         <Text style={styles.text}>New Departure time: {flightInfo.newDepartureTime ?? "TBD"}</Text>
-                        <Text style={styles.text}>New arrival time: {flightInfo.newArrivalTime ?? "TBD"}</Text>
+                        <Text style={styles.text}>New arrival time: {flightInfo.newArrivalTime ?? "Not confirmed"}</Text>
                     </View>
                 </View>
 

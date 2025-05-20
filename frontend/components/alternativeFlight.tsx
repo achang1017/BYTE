@@ -1,7 +1,6 @@
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { AltFlightInfo, FlightInfo } from '@/dataType/flight';
 import { useRouter } from 'expo-router';
-import { IconSymbol } from '@/components/ui/IconSymbol.ios';
 
 type Props = {
     flightInfo: AltFlightInfo | null;
@@ -55,7 +54,6 @@ export default function AlternativeFlight({ flightInfo, isSelected }: Props) {
             {/* Additioanl information Details */}
             <View style={styles.detailsRow}>
                 <View style={styles.eachRow}>
-                    <IconSymbol name="calendar" size={20} color={isSelected ? '#fff' : 'black'} />
                     {flightInfo.meetingConflicts > 1 ? (
                         <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.meetingConflicts} meeting conflicts</Text>
                     ) : (
@@ -63,7 +61,6 @@ export default function AlternativeFlight({ flightInfo, isSelected }: Props) {
                     )}
                 </View>
                 <View style={styles.eachRow}>
-                    <IconSymbol name="dollarsign" size={20} color={isSelected ? '#fff' : 'black'} />
 
                     {flightInfo.changeFee > 0 ? (
                         <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.changeFee} change fee</Text>)
@@ -71,13 +68,11 @@ export default function AlternativeFlight({ flightInfo, isSelected }: Props) {
                     }
                 </View>
                 <View style={styles.eachRow}>
-                    <IconSymbol name="carseat.left" size={20} color={isSelected ? '#fff' : 'black'} />
 
                     <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.seat} </Text>
                 </View>
                 {flightInfo.layover > 0 && (
                     <View style={styles.eachRow}>
-                        <IconSymbol name="airplane" size={20} color={isSelected ? '#fff' : 'black'} />
                         <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.layover} Layover flight</Text>
                     </View>
                 )}
