@@ -132,6 +132,15 @@ export default function Home() {
               : flight.arrival?.estimatedTime,
           };
           setFlightInfo(newFlightInfo);
+          await fetch(`http://localhost:3000/api/updateFlight?email=${auth.currentUser!.email ?? ''}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              flightInfo: newFlightInfo,
+            }),
+          });
         }
 
         if (flight.departure?.delay > 0) {
