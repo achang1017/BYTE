@@ -18,6 +18,7 @@ export type AltFlightInfo = {
     departureTime: String;
     arrivalTime: String;
     duration: string;
+    price: string;
     changeFee: number;
     isRecommended: boolean;
     meetingConflicts: number;

@@ -17,7 +17,6 @@ export default function AlternativeFlight({ flightInfo, isSelected }: Props) {
 
     return (
         <View style={[styles.container, (isSelected && { backgroundColor: '#1F5FC1' })]} >
-
             {/* Header Row */}
             <View style={styles.headerRow}>
                 <View style={styles.flightInfoRow}>
@@ -31,9 +30,7 @@ export default function AlternativeFlight({ flightInfo, isSelected }: Props) {
                         </View>
                         <Text style={[styles.fadedtext, isSelected && { color: '#FFFFFF' }]}>{flightInfo.flightNumber}</Text>
                     </View>
-
                 </View>
-
                 <View style={styles.timeRow}>
                     <View style={styles.timeBox}>
                         <Text style={[{ fontWeight: 'bold' }, isSelected && { color: '#FFFFFF' }]}>Departure</Text>
@@ -50,32 +47,31 @@ export default function AlternativeFlight({ flightInfo, isSelected }: Props) {
                 </View>
             </View>
 
-
             {/* Additioanl information Details */}
             <View style={styles.detailsRow}>
                 <View style={styles.eachRow}>
-                    {flightInfo.meetingConflicts > 1 ? (
-                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.meetingConflicts} meeting conflicts</Text>
-                    ) : (
-                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>No meeting conflict</Text>
-                    )}
+                    <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.seat}</Text>
                 </View>
-                <View style={styles.eachRow}>
-
-                    {flightInfo.changeFee > 0 ? (
-                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.changeFee} change fee</Text>)
-                        : (<Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>No change fee</Text>)
-                    }
+                <View style={styles.eachRow}> 
+                    <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}> 
+                        {flightInfo.layover > 0 ? `${flightInfo.layover} Layover flight` : 'No layover'}
+                    </Text>
                 </View>
-                <View style={styles.eachRow}>
-
-                    <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.seat} </Text>
+                <View style={styles.eachRow}> 
+                    <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}> 
+                        {flightInfo.meetingConflicts > 1 ? `${flightInfo.meetingConflicts} meeting conflicts` : 'No meeting conflict'}
+                    </Text>
                 </View>
-                {flightInfo.layover > 0 && (
-                    <View style={styles.eachRow}>
-                        <Text style={[styles.text, isSelected && { color: '#FFFFFF' }]}>{flightInfo.layover} Layover flight</Text>
-                    </View>
-                )}
+                <View style={styles.priceContainer}> 
+                    <Text style={[
+                        styles.price,
+                        isSelected && { color: '#fff' }
+                    ]}>
+                        ${typeof flightInfo.price === 'number'
+                            ? (flightInfo.price as number).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : 'N/A'}
+                    </Text>
+                </View>
             </View>
         </View>
     );
@@ -90,6 +86,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#000',
         padding: 20,
+        position: 'relative', // Enable absolute positioning for children
     },
 
     // Sections
@@ -112,16 +109,17 @@ const styles = StyleSheet.create({
     },
     detailsRow: {
         flexDirection: 'column',
-        justifyContent: 'space-between',
         marginTop: 20,
-    }, timeRow: {
+        gap: 8,
+    },
+    // classPriceRow removed, use eachRow for consistent spacing
+    timeRow: {
         flexDirection: 'row',
 
         justifyContent: 'space-between',
     }, eachRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        // justifyContent: 'space-between',
     },
 
     // Elements
@@ -165,4 +163,15 @@ const styles = StyleSheet.create({
     fadedtext: {
         color: '#676767',
     },
+    price: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        color: '#012A86',
+    },
+    priceContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    // layoverPriceRow removed, use eachRow for consistent spacing
 });
