@@ -80,14 +80,22 @@ export default function AlternativeFlightScreen() {
 
     const setDurationFilter = () => {
         if (alternativeFlights) {
+            // Parse duration like '11h 50m' to minutes
+            const parseDuration = (durationStr) => {
+                if (!durationStr) return Number.MAX_SAFE_INTEGER;
+                const match = durationStr.match(/(\d+)h\s*(\d+)?m?/);
+                if (!match) return Number.MAX_SAFE_INTEGER;
+                const hours = parseInt(match[1] || '0', 10);
+                const minutes = parseInt(match[2] || '0', 10);
+                return hours * 60 + minutes;
+            };
             const sortedFlights = [...alternativeFlights].sort((a, b) => {
-                const durationA = parseInt(a.duration);
-                const durationB = parseInt(b.duration);
+                const durationA = parseDuration(a.duration);
+                const durationB = parseDuration(b.duration);
                 return durationA - durationB;
             });
             setAlternativeFlights(sortedFlights);
             setFiltered('Duration');
-
         }
     };
 
@@ -118,9 +126,11 @@ export default function AlternativeFlightScreen() {
     const setPriceFilter = () => {
         if (alternativeFlights) {
             const sortedFlights = [...alternativeFlights].sort((a, b) => {
-                return a.changeFee - b.changeFee;
-            })
-
+                // price may be string, so parse to float
+                const priceA = typeof a.price === 'string' ? parseFloat(a.price.replace(/[^\d.]/g, '')) : a.price;
+                const priceB = typeof b.price === 'string' ? parseFloat(b.price.replace(/[^\d.]/g, '')) : b.price;
+                return priceA - priceB;
+            });
             setAlternativeFlights(sortedFlights);
             setFiltered('Price');
         }
