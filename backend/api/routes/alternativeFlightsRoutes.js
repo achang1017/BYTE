@@ -22,6 +22,8 @@ const ALT_FLIGHTS_SCHEMA = {
                     arrival: { type: "string" },
                     seat: { type: "string" },
                     layover: { type: "number" },
+                    isLayover: { type: "boolean" },
+                    isStopover: { type: "boolean" },
                 },
                 required: [
                     "airline",
@@ -34,6 +36,8 @@ const ALT_FLIGHTS_SCHEMA = {
                     "arrival",
                     "seat",
                     "layover",
+                    "isLayover",
+                    "isStopover",
                 ],
                 additionalProperties: false,
             }
@@ -72,11 +76,14 @@ router.get('/', async (req, res) => {
             apiKey: process.env.OPENAI_API_KEY,
         });
 
-        let prompt = `Generate a list of at least 5 upcoming flights from ${flightInfo.departure} to ${flightInfo.arrival}. Include details such as airline, flight number, departure and arrival times (ISO format), duration (e.g., 2h 30m), price, seat class, and layover time. Ensure the data is accurate and formatted as JSON.`;
-        if (preferredClass) {
-            prompt += ` At least 2 flights must be ${preferredClass} class if available. Only include flights with class: ${preferredClass} if possible.`;
-        }
-        console.log('Final OpenAI prompt:', prompt);
+
+let prompt = `Find a list of flights from real flight apis for at least 5 upcoming flights from ${flightInfo.departure} to ${flightInfo.arrival}. Include details such as airline, flight number, departure and arrival times (ISO format), duration (e.g., 2h 30m), price, seat class, layover time, and two boolean fields: isLayover (true if the flight has a layover, false otherwise) and isStopover (true if the flight has a stopover, false otherwise). Ensure the data is accurate and formatted as JSON.`;
+if (preferredClass) {
+    prompt += ` At least 2 flights must be ${preferredClass} class if available. Only include flights with class: ${preferredClass} if possible.`;
+}
+if (typeof flightInfo.isLayover === 'boolean' && flightInfo.isLayover === true) {
+    prompt += ` Only include flights where isLayover is false (i.e., direct flights with no layover).`;
+}
 
         const response = await openai.responses.create({
             model: "gpt-4o",
@@ -94,15 +101,21 @@ router.get('/', async (req, res) => {
 
         const altFlights = JSON.parse(response.output_text);
 
+        // Filter flights based on layover preference: show only flights without layovers if isLayover is true
+        let filteredFlights = altFlights.flights;
+        if (typeof flightInfo.isLayover === 'boolean' && flightInfo.isLayover === true) {
+            filteredFlights = altFlights.flights.filter(flight => !flight.isLayover && (!flight.layover || flight.layover === 0));
+        }
+
         // Store the response in Firestore
         const batch = db.batch();
-        altFlights.flights.forEach((flight) => {
+        filteredFlights.forEach((flight) => {
             const flightRef = db.collection('alternativeFlights').doc(flight.flightNumber);
             batch.set(flightRef, flight);
         });
         await batch.commit();
 
-        res.status(200).json(altFlights.flights);
+        res.status(200).json(filteredFlights);
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({ error: 'Failed to fetch alternative flight lists' });
