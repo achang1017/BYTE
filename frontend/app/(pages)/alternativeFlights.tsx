@@ -81,7 +81,7 @@ export default function AlternativeFlightScreen() {
     const setDurationFilter = () => {
         if (alternativeFlights) {
             // Parse duration like '11h 50m' to minutes
-            const parseDuration = (durationStr) => {
+            const parseDuration = (durationStr: string) => {
                 if (!durationStr) return Number.MAX_SAFE_INTEGER;
                 const match = durationStr.match(/(\d+)h\s*(\d+)?m?/);
                 if (!match) return Number.MAX_SAFE_INTEGER;
