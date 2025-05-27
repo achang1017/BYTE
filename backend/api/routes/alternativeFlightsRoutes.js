@@ -51,11 +51,16 @@ router.get('/', async (req, res) => {
     try {
         const rawFlightInfo = req.query.flightInfo;
         const userEmail = req.query.email; 
+        const accessToken = req.query.accessToken;
+
         if (!rawFlightInfo) {
             return res.status(400).json({ error: 'Missing flightInfo' });
         }
         if (!userEmail) {
             return res.status(400).json({ error: 'Missing user email' });
+        }
+        if (!accessToken) {
+            return res.status(400).json({ error: 'Missing Google access token' });
         }
         const flightInfo = JSON.parse(rawFlightInfo);
 
@@ -77,13 +82,13 @@ router.get('/', async (req, res) => {
         });
 
 
-let prompt = `Find a list of flights from real flight apis for at least 5 upcoming flights from ${flightInfo.departure} to ${flightInfo.arrival}. Include details such as airline, flight number, departure and arrival times (ISO format), duration (e.g., 2h 30m), price, seat class, layover time, and two boolean fields: isLayover (true if the flight has a layover, false otherwise) and isStopover (true if the flight has a stopover, false otherwise). Ensure the data is accurate and formatted as JSON.`;
-if (preferredClass) {
-    prompt += ` At least 2 flights must be ${preferredClass} class if available. Only include flights with class: ${preferredClass} if possible.`;
-}
-if (typeof flightInfo.isLayover === 'boolean' && flightInfo.isLayover === true) {
-    prompt += ` Only include flights where isLayover is false (i.e., direct flights with no layover).`;
-}
+        let prompt = `Find a list of flights from real flight apis for at least 5 upcoming flights from ${flightInfo.departure} to ${flightInfo.arrival}. Include details such as airline, flight number, departure and arrival times (ISO format), duration (e.g., 2h 30m), price, seat class, layover time, and two boolean fields: isLayover (true if the flight has a layover, false otherwise) and isStopover (true if the flight has a stopover, false otherwise). Ensure the data is accurate and formatted as JSON.`;
+        if (preferredClass) {
+            prompt += ` At least 2 flights must be ${preferredClass} class if available. Only include flights with class: ${preferredClass} if possible.`;
+        }
+        if (typeof flightInfo.isLayover === 'boolean' && flightInfo.isLayover === true) {
+            prompt += ` Only include flights where isLayover is false (i.e., direct flights with no layover).`;
+        }
 
         const response = await openai.responses.create({
             model: "gpt-4o",
@@ -107,15 +112,27 @@ if (typeof flightInfo.isLayover === 'boolean' && flightInfo.isLayover === true) 
             filteredFlights = altFlights.flights.filter(flight => !flight.isLayover && (!flight.layover || flight.layover === 0));
         }
 
-        // Store the response in Firestore
-        const batch = db.batch();
-        filteredFlights.forEach((flight) => {
-            const flightRef = db.collection('alternativeFlights').doc(flight.flightNumber);
-            batch.set(flightRef, flight);
-        });
-        await batch.commit();
+        const checkConflicts = async (flight) => {
+            const departureISO = new Date(flight.departureTime).toISOString();
+            const arrivalISO = new Date(flight.arrivalTime).toISOString();
+            const calendarRes = await fetch(
+                `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${departureISO}&timeMax=${arrivalISO}&singleEvents=true`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+            const data = await calendarRes.json();
+            return (data.items && Array.isArray(data.items)) ? data.items.length : 0;
+        };
 
-        res.status(200).json(filteredFlights);
+        const flightsWithConflicts = await Promise.all(filteredFlights.map(async (flight) => {
+            const conflicts = await checkConflicts(flight);
+            return { ...flight, meetingConflicts: conflicts };
+        }));
+
+        res.status(200).json(flightsWithConflicts);
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({ error: 'Failed to fetch alternative flight lists' });

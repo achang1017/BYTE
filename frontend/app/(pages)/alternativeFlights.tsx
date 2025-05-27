@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import AlternativeFlight from '@/components/alternativeFlight';
 import { useEffect, useState } from 'react';
+import { useAuth } from '../../authContext';
 
 
 
@@ -24,6 +25,7 @@ export default function AlternativeFlightScreen() {
 
 
     const router = useRouter();
+    const { accessToken } = useAuth();
 
     // Match the params to FlightInfo type
     const flightInfo: FlightInfo = {
@@ -52,7 +54,7 @@ export default function AlternativeFlightScreen() {
                     throw new Error('User not logged in');
                 }
                 const encodedFlightInfo = encodeURIComponent(JSON.stringify(flightInfo));
-                const response = await fetch(`http://localhost:3000/api/alternativeFlights?flightInfo=${encodedFlightInfo}&email=${encodeURIComponent(userEmail)}`);
+                const response = await fetch(`http://localhost:3000/api/alternativeFlights?flightInfo=${encodedFlightInfo}&email=${encodeURIComponent(userEmail)}&accessToken=${accessToken}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch alternative flights');
                 }
